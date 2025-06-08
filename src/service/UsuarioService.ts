@@ -34,7 +34,7 @@ export class UsuarioService {
       throw new Error("Curso informado não existe.");
     }
 
-    const usuario = new UsuarioEntity(nome,cpf,true,categoria_id,curso_id);
+    const usuario = new UsuarioEntity(nome,cpf,"ativo",categoria_id,curso_id);
 
     this.usuarioRepository.insereUsuario(usuario);
     return usuario;
@@ -49,7 +49,7 @@ export class UsuarioService {
     if (!usuarioExistente) {
       throw new Error("Usuário não encontrado.");
     }
-    
+
     this.usuarioRepository.removeUsuarioPorCPF(cpf);
   }
   buscarUsuarioPorCPF(cpf: string): UsuarioEntity | undefined{
@@ -63,9 +63,14 @@ export class UsuarioService {
       throw new Error("Usuário não encontrado.");
     }
 
+    if (dadosAtualizados.ativo) {
+        throw new Error("O status do usuário é alterado automaticamente por regras de negócio.");
+    }
+
     if (dadosAtualizados.nome) {
       usuario.nome = dadosAtualizados.nome;
     }
+
     if (dadosAtualizados.categoria_id) {
       const categoria = this.categoriaRepository.findById(Number(dadosAtualizados.categoria_id));
       if (!categoria) throw new Error("Nova categoria informada não existe.");
@@ -78,6 +83,35 @@ export class UsuarioService {
     }
     return usuario;
   }
+
+    aplicarSuspensao(cpf: string): UsuarioEntity {
+      const usuario = this.usuarioRepository.findByCPF(cpf);
+      if (!usuario) {
+          throw new Error("Usuário não encontrado.");
+      }
+
+      usuario.ativo = "suspenso";
+      return usuario;
+    }
+
+    aplicarInativacao(cpf: string): UsuarioEntity {
+      const usuario = this.usuarioRepository.findByCPF(cpf);
+      if (!usuario) {
+          throw new Error("Usuário não encontrado.");
+      }
+
+      usuario.ativo = "inativo";
+      return usuario;
+    }
+
+    regularizarStatus(cpf: string): UsuarioEntity {
+      const usuario = this.usuarioRepository.findByCPF(cpf);
+      if (!usuario) {
+          throw new Error("Usuário não encontrado.");
+      }
+      usuario.ativo = "ativo";
+      return usuario;
+    }
 
    private validarCPF(cpf: string): boolean {
     // 1. Verifica se o CPF tem 11 dígitos  e não é uma sequência repetida.

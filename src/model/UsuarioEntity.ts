@@ -2,11 +2,11 @@ export class UsuarioEntity {
   id: number
   nome: string
   cpf: string
-  ativo: boolean
+  ativo: string
   categoria_id: number
   curso_id: number
 
-   constructor(nome: string,cpf: string,ativo: boolean,categoria_id: number,curso_id: number) {
+   constructor(nome: string,cpf: string,ativo: string,categoria_id: number,curso_id: number) {
     this.id = this.gerarId()
     this.nome = nome
     this.cpf = cpf
