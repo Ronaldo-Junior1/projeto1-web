@@ -19,7 +19,8 @@ export class LivroController {
             const livros = this.livroService.listarLivros();
             res.status(200).json(livros);
         } catch (error: unknown) {
-            res.status(500).json({ message: "Erro ao listar livros." });
+            const message = error instanceof Error ? error.message : "Erro ao listar livros.";
+            res.status(500).json({ message });
         }
     }
 
