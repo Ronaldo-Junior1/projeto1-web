@@ -35,9 +35,12 @@ class UsuarioService {
     listarUsuarios() {
         return this.usuarioRepository.findAll();
     }
-    removeUsuario(data) {
-        const id = parseInt(data, 10);
-        this.usuarioRepository.removeUsuarioPorCPF(id);
+    removeUsuario(cpf) {
+        const usuarioExistente = this.usuarioRepository.findByCPF(cpf);
+        if (!usuarioExistente) {
+            throw new Error("Usuário não encontrado.");
+        }
+        this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
     buscarUsuarioPorCPF(cpf) {
         return this.usuarioRepository.findByCPF(cpf);

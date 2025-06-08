@@ -17,8 +17,13 @@ export class UsuarioRepository {
     this.usuarioList.push(usuario);
   }
 
-  removeUsuarioPorCPF(id: number) {
-    const index = this.findIndex(id);
+  removeUsuarioPorCPF(cpf: string): void {
+    const index = this.usuarioList.findIndex(u => u.cpf === cpf);
+
+    if (index === -1) {
+      throw new Error("Usuário com o CPF informado não foi encontrado para remoção!");
+    }
+
     this.usuarioList.splice(index, 1);
   }
 
@@ -28,13 +33,5 @@ export class UsuarioRepository {
 
   findByCPF(cpf: string): UsuarioEntity | undefined {
     return this.usuarioList.find(u => u.cpf === cpf);
-  }
-
-  private findIndex(id: number): number {
-    const index = this.usuarioList.findIndex(u => u.id === id);
-    if (index === -1) {
-      throw new Error("ID informado não foi encontrado!");
-    }
-    return index;
   }
 }

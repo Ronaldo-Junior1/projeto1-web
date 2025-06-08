@@ -18,4 +18,5 @@ export class CategoriaUsuarioRepository {
   findById(id: number) {
     return this.categorias.find(c => c.id === id);
   }
+
 }

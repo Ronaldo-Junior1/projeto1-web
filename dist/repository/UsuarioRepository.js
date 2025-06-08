@@ -14,8 +14,11 @@ class UsuarioRepository {
     insereUsuario(usuario) {
         this.usuarioList.push(usuario);
     }
-    removeUsuarioPorCPF(id) {
-        const index = this.findIndex(id);
+    removeUsuarioPorCPF(cpf) {
+        const index = this.usuarioList.findIndex(u => u.cpf === cpf);
+        if (index === -1) {
+            throw new Error("Usuário com o CPF informado não foi encontrado para remoção!");
+        }
         this.usuarioList.splice(index, 1);
     }
     findAll() {
@@ -23,13 +26,6 @@ class UsuarioRepository {
     }
     findByCPF(cpf) {
         return this.usuarioList.find(u => u.cpf === cpf);
-    }
-    findIndex(id) {
-        const index = this.usuarioList.findIndex(u => u.id === id);
-        if (index === -1) {
-            throw new Error("ID informado não foi encontrado!");
-        }
-        return index;
     }
 }
 exports.UsuarioRepository = UsuarioRepository;

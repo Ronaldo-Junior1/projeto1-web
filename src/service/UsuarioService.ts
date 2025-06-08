@@ -44,9 +44,13 @@ export class UsuarioService {
     return this.usuarioRepository.findAll();
   }
 
-  removeUsuario(data: any) {
-    const id = parseInt(data, 10);
-    this.usuarioRepository.removeUsuarioPorCPF(id);
+  removeUsuario(cpf: string):void {
+     const usuarioExistente = this.usuarioRepository.findByCPF(cpf);
+    if (!usuarioExistente) {
+      throw new Error("Usuário não encontrado.");
+    }
+    
+    this.usuarioRepository.removeUsuarioPorCPF(cpf);
   }
   buscarUsuarioPorCPF(cpf: string): UsuarioEntity | undefined{
     return this.usuarioRepository.findByCPF(cpf);
