@@ -2,7 +2,7 @@ import { UsuarioEntity } from "../model/UsuarioEntity";
 
 export class UsuarioRepository {
   private static instance: UsuarioRepository;
-  private usuarioList: UsuarioEntity[] = [];
+  private usuarios: UsuarioEntity[] = [];
 
   private constructor() {}
 
@@ -14,24 +14,24 @@ export class UsuarioRepository {
   }
 
   insereUsuario(usuario: UsuarioEntity) {
-    this.usuarioList.push(usuario);
+    this.usuarios.push(usuario);
   }
 
   removeUsuarioPorCPF(cpf: string): void {
-    const index = this.usuarioList.findIndex(u => u.cpf === cpf);
+    const index = this.usuarios.findIndex(u => u.cpf === cpf);
 
     if (index === -1) {
       throw new Error("Usuário com o CPF informado não foi encontrado para remoção!");
     }
 
-    this.usuarioList.splice(index, 1);
+    this.usuarios.splice(index, 1);
   }
 
   findAll(): UsuarioEntity[] {
-    return this.usuarioList;
+    return this.usuarios;
   }
 
   findByCPF(cpf: string): UsuarioEntity | undefined {
-    return this.usuarioList.find(u => u.cpf === cpf);
+    return this.usuarios.find(u => u.cpf === cpf);
   }
 }

@@ -28,7 +28,7 @@ class UsuarioService {
         if (!curso) {
             throw new Error("Curso informado não existe.");
         }
-        const usuario = new UsuarioEntity_1.UsuarioEntity(nome, cpf, true, categoria_id, curso_id);
+        const usuario = new UsuarioEntity_1.UsuarioEntity(nome, cpf, "ativo", categoria_id, curso_id);
         this.usuarioRepository.insereUsuario(usuario);
         return usuario;
     }
@@ -50,6 +50,9 @@ class UsuarioService {
         if (!usuario) {
             throw new Error("Usuário não encontrado.");
         }
+        if (dadosAtualizados.ativo) {
+            throw new Error("O status do usuário é alterado automaticamente por regras de negócio.");
+        }
         if (dadosAtualizados.nome) {
             usuario.nome = dadosAtualizados.nome;
         }
@@ -65,6 +68,30 @@ class UsuarioService {
                 throw new Error("Novo curso informado não existe.");
             usuario.curso_id = Number(dadosAtualizados.curso_id);
         }
+        return usuario;
+    }
+    aplicarSuspensao(cpf) {
+        const usuario = this.usuarioRepository.findByCPF(cpf);
+        if (!usuario) {
+            throw new Error("Usuário não encontrado.");
+        }
+        usuario.ativo = "suspenso";
+        return usuario;
+    }
+    aplicarInativacao(cpf) {
+        const usuario = this.usuarioRepository.findByCPF(cpf);
+        if (!usuario) {
+            throw new Error("Usuário não encontrado.");
+        }
+        usuario.ativo = "inativo";
+        return usuario;
+    }
+    regularizarStatus(cpf) {
+        const usuario = this.usuarioRepository.findByCPF(cpf);
+        if (!usuario) {
+            throw new Error("Usuário não encontrado.");
+        }
+        usuario.ativo = "ativo";
         return usuario;
     }
     validarCPF(cpf) {
