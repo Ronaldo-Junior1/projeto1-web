@@ -1,12 +1,15 @@
+import { CursoEntity } from "../model/CursoEntity";
+
 export class CursoRepository {
   private static instance: CursoRepository;
-  private cursos = [
-    { id: 1, nome: "ADS" },
-    { id: 2, nome: "Pedagogia" },
-    { id: 3, nome: "Administracao" }
-  ];
+   private cursos: CursoEntity[] = [];
 
-  private constructor() {}
+
+  private constructor() {
+    this.cursos.push(new CursoEntity(1, "ADS"));
+    this.cursos.push(new CursoEntity(2, "Pedagogia"));
+    this.cursos.push(new CursoEntity(3, "Administracao"));
+  }
 
   static getInstance(): CursoRepository {
     if (!this.instance) {

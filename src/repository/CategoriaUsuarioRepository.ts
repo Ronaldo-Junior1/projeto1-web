@@ -1,12 +1,14 @@
+import { CategoriaUsuarioEntity } from "../model/CategoriaUsuarioEntity";
+
 export class CategoriaUsuarioRepository {
   private static instance: CategoriaUsuarioRepository;
-  private categorias = [
-    { id: 1, nome: "Professor" },
-    { id: 2, nome: "Aluno" },
-    { id: 3, nome: "Bibliotecario" }
-  ];
+  private categorias: CategoriaUsuarioEntity[] = [];
 
-  private constructor() {}
+  private constructor() {
+    this.categorias.push(new CategoriaUsuarioEntity(1, "Professor"));
+    this.categorias.push(new CategoriaUsuarioEntity(2, "Aluno"));
+    this.categorias.push(new CategoriaUsuarioEntity(3, "Bibliotecário"));
+  }
 
   static getInstance(): CategoriaUsuarioRepository {
     if (!this.instance) {
