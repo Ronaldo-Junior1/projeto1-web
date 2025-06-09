@@ -20,7 +20,8 @@ class LivroController {
             res.status(200).json(livros);
         }
         catch (error) {
-            res.status(500).json({ message: "Erro ao listar livros." });
+            const message = error instanceof Error ? error.message : "Erro ao listar livros.";
+            res.status(500).json({ message });
         }
     }
     detalharLivro(req, res) {

@@ -5,10 +5,10 @@ export class CategoriaLivroRepository {
   private categorias: CategoriaLivroEntity[] = [];
 
   private constructor() {
-    this.categorias.push(new CategoriaLivroEntity(1, "Romance"));
-    this.categorias.push(new CategoriaLivroEntity(2, "Computação"));
-    this.categorias.push(new CategoriaLivroEntity(3, "Letras"));
-    this.categorias.push(new CategoriaLivroEntity(4, "Gestão"));
+    this.categorias.push(new CategoriaLivroEntity(1, "Computação"));
+    this.categorias.push(new CategoriaLivroEntity(2, "Letras"));
+    this.categorias.push(new CategoriaLivroEntity(3, "Gestão"));
+    this.categorias.push(new CategoriaLivroEntity(4, "Romance"));
   }
 
   static getInstance(): CategoriaLivroRepository {

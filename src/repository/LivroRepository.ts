@@ -25,6 +25,10 @@ export class LivroRepository {
     return this.livros.find(l => l.isbn === isbn);
   }
 
+  findById(id: number): LivroEntity | undefined {
+      return this.livros.find(e => e.id === id);
+    }
+
   findByAutorEditoraEdicao(autor: string, editora: string, edicao: string): LivroEntity | undefined {
     return this.livros.find(l => l.autor === autor && l.editora === editora && l.edicao === edicao);
   }

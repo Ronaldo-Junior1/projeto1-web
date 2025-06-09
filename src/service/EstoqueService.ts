@@ -36,18 +36,16 @@ export class EstoqueService {
         return exemplar;
     }
     
-    atualizarEstoque(codigo: number, dados: { quantidade?: number, disponivel?: boolean }): EstoqueEntity {
+    atualizarQuantidade(codigo: number, novaQuantidade: number): EstoqueEntity {
+        if (novaQuantidade === undefined || novaQuantidade < 0) {
+            throw new Error("A nova quantidade é obrigatória e não pode ser negativa.");
+        }
         const estoque = this.buscarPorCodigo(codigo);
-
-        if (dados.quantidade !== undefined) {
-            if (dados.quantidade < 0) throw new Error("Quantidade não pode ser negativa.");
-            estoque.quantidade = dados.quantidade;
+        if (novaQuantidade < estoque.quantidade_emprestada) {
+            throw new Error("A nova quantidade não pode ser menor que a quantidade já emprestada.");
         }
-
-        if (dados.disponivel !== undefined) {
-            estoque.disponivel = dados.disponivel;
-        }
-        
+        estoque.quantidade = novaQuantidade;
+        estoque.disponivel = estoque.quantidade > estoque.quantidade_emprestada;
         return estoque;
     }
 
@@ -55,4 +53,25 @@ export class EstoqueService {
         const estoque = this.buscarPorCodigo(codigo);
         this.estoqueRepository.removeById(codigo);
     }
+
+    registrarEmprestimo(codigo_exemplar: number): void {
+        const estoque = this.buscarPorCodigo(codigo_exemplar);
+        
+        if (!estoque.disponivel) {
+            throw new Error("Não há exemplares disponíveis para empréstimo (verificação final).");
+        }
+
+        estoque.quantidade_emprestada++;
+        estoque.disponivel = estoque.quantidade > estoque.quantidade_emprestada;
+    }
+
+    registrarDevolucao(codigo_exemplar: number): void {
+        const estoque = this.buscarPorCodigo(codigo_exemplar);
+        if (estoque.quantidade_emprestada > 0) {
+            estoque.quantidade_emprestada--;
+        }
+
+        estoque.disponivel = true;
+    }
+
 }

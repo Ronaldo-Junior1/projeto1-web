@@ -27,5 +27,8 @@ class UsuarioRepository {
     findByCPF(cpf) {
         return this.usuarios.find(u => u.cpf === cpf);
     }
+    findById(id) {
+        return this.usuarios.find(e => e.id === id);
+    }
 }
 exports.UsuarioRepository = UsuarioRepository;

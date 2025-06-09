@@ -34,4 +34,9 @@ export class UsuarioRepository {
   findByCPF(cpf: string): UsuarioEntity | undefined {
     return this.usuarios.find(u => u.cpf === cpf);
   }
+
+  findById(id: number): UsuarioEntity | undefined {
+        return this.usuarios.find(e => e.id === id);
+      }
+  
 }

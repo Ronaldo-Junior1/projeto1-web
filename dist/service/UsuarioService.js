@@ -51,7 +51,12 @@ class UsuarioService {
             throw new Error("Usuário não encontrado.");
         }
         if (dadosAtualizados.ativo) {
-            throw new Error("O status do usuário é alterado automaticamente por regras de negócio.");
+            if (dadosAtualizados.ativo === "ativo") {
+                usuario.ativo = "ativo";
+            }
+            else {
+                throw new Error(`O status só pode ser alterado para 'ativo'. Status '${dadosAtualizados.ativo}' é inválido.`);
+            }
         }
         if (dadosAtualizados.nome) {
             usuario.nome = dadosAtualizados.nome;
@@ -73,26 +78,17 @@ class UsuarioService {
     aplicarSuspensao(cpf) {
         const usuario = this.usuarioRepository.findByCPF(cpf);
         if (!usuario) {
-            throw new Error("Usuário não encontrado.");
+            console.error(`Tentativa de suspender um usuário não encontrado com CPF: ${cpf}`);
+            return;
         }
         usuario.ativo = "suspenso";
-        return usuario;
+        console.log(`O usuário com CPF ${cpf} foi suspenso.`);
     }
-    aplicarInativacao(cpf) {
+    inativarUsuario(cpf) {
         const usuario = this.usuarioRepository.findByCPF(cpf);
-        if (!usuario) {
-            throw new Error("Usuário não encontrado.");
-        }
+        if (!usuario)
+            return;
         usuario.ativo = "inativo";
-        return usuario;
-    }
-    regularizarStatus(cpf) {
-        const usuario = this.usuarioRepository.findByCPF(cpf);
-        if (!usuario) {
-            throw new Error("Usuário não encontrado.");
-        }
-        usuario.ativo = "ativo";
-        return usuario;
     }
     validarCPF(cpf) {
         // 1. Verifica se o CPF tem 11 dígitos  e não é uma sequência repetida.

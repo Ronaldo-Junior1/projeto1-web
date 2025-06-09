@@ -36,7 +36,8 @@ export class EstoqueController {
     atualizarDisponibilidade(req: Request, res: Response): void {
         try {
             const { codigo } = req.params;
-            const exemplar = this.estoqueService.atualizarEstoque(Number(codigo), req.body);
+            const { quantidade } = req.body;
+            const exemplar = this.estoqueService.atualizarQuantidade(Number(codigo), quantidade);
             res.status(200).json(exemplar);
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : "Erro ao atualizar exemplar.";

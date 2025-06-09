@@ -36,7 +36,8 @@ class EstoqueController {
     atualizarDisponibilidade(req, res) {
         try {
             const { codigo } = req.params;
-            const exemplar = this.estoqueService.atualizarEstoque(Number(codigo), req.body);
+            const { quantidade } = req.body;
+            const exemplar = this.estoqueService.atualizarQuantidade(Number(codigo), quantidade);
             res.status(200).json(exemplar);
         }
         catch (error) {

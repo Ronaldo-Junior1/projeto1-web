@@ -64,8 +64,12 @@ export class UsuarioService {
     }
 
     if (dadosAtualizados.ativo) {
-        throw new Error("O status do usuário é alterado automaticamente por regras de negócio.");
-    }
+            if (dadosAtualizados.ativo === "ativo") {
+                usuario.ativo = "ativo";
+            } else {
+                throw new Error(`O status só pode ser alterado para 'ativo'. Status '${dadosAtualizados.ativo}' é inválido.`);
+            }
+        }
 
     if (dadosAtualizados.nome) {
       usuario.nome = dadosAtualizados.nome;
@@ -84,46 +88,31 @@ export class UsuarioService {
     return usuario;
   }
 
-    aplicarSuspensao(cpf: string): UsuarioEntity {
-      const usuario = this.usuarioRepository.findByCPF(cpf);
-      if (!usuario) {
-          throw new Error("Usuário não encontrado.");
-      }
-
-      usuario.ativo = "suspenso";
-      return usuario;
+    aplicarSuspensao(cpf: string): void {
+        const usuario = this.usuarioRepository.findByCPF(cpf);
+        if (!usuario) {
+            console.error(`Tentativa de suspender um usuário não encontrado com CPF: ${cpf}`);
+            return;
+        }
+        usuario.ativo = "suspenso";
     }
 
-    aplicarInativacao(cpf: string): UsuarioEntity {
-      const usuario = this.usuarioRepository.findByCPF(cpf);
-      if (!usuario) {
-          throw new Error("Usuário não encontrado.");
-      }
 
-      usuario.ativo = "inativo";
-      return usuario;
-    }
+    inativarUsuario(cpf: string): void {
+        const usuario = this.usuarioRepository.findByCPF(cpf);
+        if (!usuario) return;
 
-    regularizarStatus(cpf: string): UsuarioEntity {
-      const usuario = this.usuarioRepository.findByCPF(cpf);
-      if (!usuario) {
-          throw new Error("Usuário não encontrado.");
-      }
-      usuario.ativo = "ativo";
-      return usuario;
+        usuario.ativo = "inativo";
     }
 
    private validarCPF(cpf: string): boolean {
-    // 1. Verifica se o CPF tem 11 dígitos  e não é uma sequência repetida.
     if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
       return false;
     }
 
     const digitos = cpf.split('').map(Number);
 
-    // Função para calcular um dígito verificador.
     const calcularDigito = (parteCpf: number[]): number => {
-      // Atribui pesos e soma os resultados.
       const soma = parteCpf.reduce((acc, digito, index) => {
         const peso = parteCpf.length + 1 - index;
         return acc + (digito * peso);
@@ -139,13 +128,13 @@ export class UsuarioService {
     // --- Validação do primeiro dígito verificador (10º dígito) ---
     const primeirosNove = digitos.slice(0, 9);
     if (calcularDigito(primeirosNove) !== digitos[9]) {
-      return false; // Falha na validação do primeiro dígito.
+      return false;
     }
 
     // --- Validação do segundo dígito verificador (11º dígito) ---
     const primeirosDez = digitos.slice(0, 10);
     if (calcularDigito(primeirosDez) !== digitos[10]) {
-      return false; // Falha na validação do segundo dígito.
+      return false;
     }
 
     return true; // CPF é válido.

@@ -20,6 +20,9 @@ class LivroRepository {
     findByIsbn(isbn) {
         return this.livros.find(l => l.isbn === isbn);
     }
+    findById(id) {
+        return this.livros.find(e => e.id === id);
+    }
     findByAutorEditoraEdicao(autor, editora, edicao) {
         return this.livros.find(l => l.autor === autor && l.editora === editora && l.edicao === edicao);
     }

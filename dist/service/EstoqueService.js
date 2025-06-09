@@ -33,21 +33,41 @@ class EstoqueService {
         }
         return exemplar;
     }
-    atualizarEstoque(codigo, dados) {
+    atualizarQuantidade(codigo, novaQuantidade) {
+        if (novaQuantidade === undefined || novaQuantidade < 0) {
+            throw new Error("A nova quantidade é obrigatória e não pode ser negativa.");
+        }
         const estoque = this.buscarPorCodigo(codigo);
-        if (dados.quantidade !== undefined) {
-            if (dados.quantidade < 0)
-                throw new Error("Quantidade não pode ser negativa.");
-            estoque.quantidade = dados.quantidade;
+        if (novaQuantidade < estoque.quantidade_emprestada) {
+            throw new Error("A nova quantidade não pode ser menor que a quantidade já emprestada.");
         }
-        if (dados.disponivel !== undefined) {
-            estoque.disponivel = dados.disponivel;
-        }
+        estoque.quantidade = novaQuantidade;
+        // A disponibilidade é reavaliada automaticamente após a mudança de quantidade.
+        estoque.disponivel = estoque.quantidade > estoque.quantidade_emprestada;
         return estoque;
     }
     removerExemplar(codigo) {
         const estoque = this.buscarPorCodigo(codigo);
         this.estoqueRepository.removeById(codigo);
+    }
+    registrarEmprestimo(codigo_exemplar) {
+        const estoque = this.buscarPorCodigo(codigo_exemplar);
+        // A validação de disponibilidade já foi feita pelo EmprestimoService,
+        // mas uma checagem dupla garante a integridade dos dados.
+        if (!estoque.disponivel) {
+            throw new Error("Não há exemplares disponíveis para empréstimo (verificação final).");
+        }
+        estoque.quantidade_emprestada++;
+        // O status 'disponivel' é atualizado automaticamente com base nas contagens.
+        estoque.disponivel = estoque.quantidade > estoque.quantidade_emprestada;
+    }
+    registrarDevolucao(codigo_exemplar) {
+        const estoque = this.buscarPorCodigo(codigo_exemplar);
+        if (estoque.quantidade_emprestada > 0) {
+            estoque.quantidade_emprestada--;
+        }
+        // Após uma devolução, o livro sempre volta a ficar disponível.
+        estoque.disponivel = true;
     }
 }
 exports.EstoqueService = EstoqueService;
