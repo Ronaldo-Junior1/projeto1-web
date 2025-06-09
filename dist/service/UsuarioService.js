@@ -5,10 +5,12 @@ const UsuarioEntity_1 = require("../model/UsuarioEntity");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 const CategoriaUsuarioRepository_1 = require("../repository/CategoriaUsuarioRepository");
 const CursoRepository_1 = require("../repository/CursoRepository");
+const EmprestimoRepository_1 = require("../repository/EmprestimoRepository");
 class UsuarioService {
     usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
     categoriaRepository = CategoriaUsuarioRepository_1.CategoriaUsuarioRepository.getInstance();
     cursoRepository = CursoRepository_1.CursoRepository.getInstance();
+    emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
     novoUsuario(data) {
         const { nome, cpf, categoria_id, curso_id } = data;
         if (!nome || !cpf || !categoria_id || !curso_id) {
@@ -39,6 +41,10 @@ class UsuarioService {
         const usuarioExistente = this.usuarioRepository.findByCPF(cpf);
         if (!usuarioExistente) {
             throw new Error("Usuário não encontrado.");
+        }
+        const emprestimosAtivos = this.emprestimoRepository.findAtivosByUsuarioId(usuarioExistente.id);
+        if (emprestimosAtivos.length > 0) {
+            throw new Error("Usuário não pode ser removido pois possui empréstimos ativos.");
         }
         this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
@@ -82,7 +88,6 @@ class UsuarioService {
             return;
         }
         usuario.ativo = "suspenso";
-        console.log(`O usuário com CPF ${cpf} foi suspenso.`);
     }
     inativarUsuario(cpf) {
         const usuario = this.usuarioRepository.findByCPF(cpf);
@@ -91,14 +96,11 @@ class UsuarioService {
         usuario.ativo = "inativo";
     }
     validarCPF(cpf) {
-        // 1. Verifica se o CPF tem 11 dígitos  e não é uma sequência repetida.
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
             return false;
         }
         const digitos = cpf.split('').map(Number);
-        // Função para calcular um dígito verificador.
         const calcularDigito = (parteCpf) => {
-            // Atribui pesos e soma os resultados.
             const soma = parteCpf.reduce((acc, digito, index) => {
                 const peso = parteCpf.length + 1 - index;
                 return acc + (digito * peso);
@@ -111,12 +113,12 @@ class UsuarioService {
         // --- Validação do primeiro dígito verificador (10º dígito) ---
         const primeirosNove = digitos.slice(0, 9);
         if (calcularDigito(primeirosNove) !== digitos[9]) {
-            return false; // Falha na validação do primeiro dígito.
+            return false;
         }
         // --- Validação do segundo dígito verificador (11º dígito) ---
         const primeirosDez = digitos.slice(0, 10);
         if (calcularDigito(primeirosDez) !== digitos[10]) {
-            return false; // Falha na validação do segundo dígito.
+            return false;
         }
         return true; // CPF é válido.
     }

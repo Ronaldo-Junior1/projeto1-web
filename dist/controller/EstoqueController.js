@@ -45,5 +45,15 @@ class EstoqueController {
             res.status(400).json({ message });
         }
     }
+    removerExemplar(req, res) {
+        try {
+            this.estoqueService.removerExemplar(Number(req.params.codigo));
+            res.status(204).send();
+        }
+        catch (error) {
+            const message = error instanceof Error ? error.message : "Erro ao remover exemplar.";
+            res.status(400).json({ message });
+        }
+    }
 }
 exports.EstoqueController = EstoqueController;

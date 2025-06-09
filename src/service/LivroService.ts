@@ -1,11 +1,15 @@
 import { LivroEntity } from "../model/LivroEntity";
 import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepositoryt";
+import { EmprestimoRepository } from "../repository/EmprestimoRepository";
+import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { LivroRepository } from "../repository/LivroRepository";
 
 
 export class LivroService {
     private livroRepository = LivroRepository.getInstance();
     private categoriaRepository = CategoriaLivroRepository.getInstance();
+    private estoqueRepository = EstoqueRepository.getInstance();
+    private emprestimoRepository = EmprestimoRepository.getInstance();
 
     novoLivro(data: any): LivroEntity {
         const { titulo, isbn, autor, editora, edicao, categoria_id } = data;
@@ -58,5 +62,23 @@ export class LivroService {
         }
         
         return livro;
+    }
+
+     removerLivro(isbn: string): void {
+        const livro = this.buscarLivroPorIsbn(isbn);
+
+        const todosOsExemplares = this.estoqueRepository.findAllByLivroId(livro.id);
+
+        for (const exemplar of todosOsExemplares) {
+            const emprestimoAtivo = this.emprestimoRepository.findAtivoByEstoqueId(exemplar.id);
+            if (emprestimoAtivo) {
+                throw new Error(`Livro não pode ser removido. O exemplar de código ${exemplar.id} está emprestado.`);
+            }
+        }
+        
+        this.livroRepository.removeLivroPorIsbn(isbn);
+        for (const exemplar of todosOsExemplares) {
+            this.estoqueRepository.removeById(exemplar.id);
+        }
     }
 }

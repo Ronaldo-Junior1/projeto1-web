@@ -27,11 +27,13 @@ app.post(`${BASE_URL}/livros`, livroController.cadastrarLivro.bind(livroControll
 app.get(`${BASE_URL}/livros`, livroController.listarLivros.bind(livroController));
 app.get(`${BASE_URL}/livros/:isbn`, livroController.detalharLivro.bind(livroController));
 app.put(`${BASE_URL}/livros/:isbn`, livroController.atualizarLivro.bind(livroController));
+app.delete(`${BASE_URL}/livros/:isbn`, livroController.removerLivro.bind(livroController));
 // --- Rotas de Estoque ---
 app.post(`${BASE_URL}/estoque`, estoqueController.cadastrarExemplar.bind(estoqueController));
 app.get(`${BASE_URL}/estoque`, estoqueController.listarExemplares.bind(estoqueController));
 app.get(`${BASE_URL}/estoque/:codigo`, estoqueController.detalharExemplar.bind(estoqueController));
 app.put(`${BASE_URL}/estoque/:codigo`, estoqueController.atualizarDisponibilidade.bind(estoqueController));
+app.delete(`${BASE_URL}/estoque/:codigo`, estoqueController.removerExemplar.bind(estoqueController));
 // --- Rotas de Empréstimos ---
 console.log("Configurando rotas de empréstimos...");
 app.post(`${BASE_URL}/emprestimos`, emprestimoController.realizarEmprestimo.bind(emprestimoController));

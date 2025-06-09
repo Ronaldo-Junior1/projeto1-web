@@ -1,10 +1,12 @@
 import { EstoqueEntity } from "../model/EstoqueEntity";
+import { EmprestimoRepository } from "../repository/EmprestimoRepository";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { LivroRepository } from "../repository/LivroRepository";
 
 export class EstoqueService {
     private estoqueRepository = EstoqueRepository.getInstance();
     private livroRepository = LivroRepository.getInstance();
+    private emprestimoRepository = EmprestimoRepository.getInstance();
 
     novoExemplar(data: { isbn: string; codigo_exemplar: number }): EstoqueEntity {
         const { isbn, codigo_exemplar } = data;
@@ -49,10 +51,18 @@ export class EstoqueService {
         return estoque;
     }
 
-    removerExemplar(codigo: number): void {
-        const estoque = this.buscarPorCodigo(codigo);
-        this.estoqueRepository.removeById(codigo);
+   removerExemplar(codigo: number): void {
+        const exemplar = this.buscarPorCodigo(codigo); 
+
+        const emprestimoAtivo = this.emprestimoRepository.findAtivoByEstoqueId(exemplar.id);
+
+        if (emprestimoAtivo) {
+            throw new Error("Exemplar não pode ser removido pois está emprestado.");
+        }
+        
+        this.estoqueRepository.removeById(exemplar.id);
     }
+
 
     registrarEmprestimo(codigo_exemplar: number): void {
         const estoque = this.buscarPorCodigo(codigo_exemplar);

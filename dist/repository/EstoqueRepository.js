@@ -20,6 +20,9 @@ class EstoqueRepository {
     findById(id) {
         return this.estoque.find(e => e.id === id);
     }
+    findAllByLivroId(livro_id) {
+        return this.estoque.filter(e => e.livro_id === livro_id);
+    }
     removeById(id) {
         const index = this.estoque.findIndex(e => e.id === id);
         if (index !== -1) {

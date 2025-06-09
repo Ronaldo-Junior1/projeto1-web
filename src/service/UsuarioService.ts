@@ -2,11 +2,13 @@ import { UsuarioEntity } from "../model/UsuarioEntity";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
 import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
 import { CursoRepository } from "../repository/CursoRepository";
+import { EmprestimoRepository } from "../repository/EmprestimoRepository";
 
 export class UsuarioService {
   private usuarioRepository = UsuarioRepository.getInstance();
   private categoriaRepository = CategoriaUsuarioRepository.getInstance();
   private cursoRepository = CursoRepository.getInstance();
+   private emprestimoRepository = EmprestimoRepository.getInstance(); 
 
   novoUsuario(data: any): UsuarioEntity {
     const { nome, cpf, categoria_id, curso_id } = data;
@@ -48,6 +50,12 @@ export class UsuarioService {
      const usuarioExistente = this.usuarioRepository.findByCPF(cpf);
     if (!usuarioExistente) {
       throw new Error("Usuário não encontrado.");
+    }
+
+    const emprestimosAtivos = this.emprestimoRepository.findAtivosByUsuarioId(usuarioExistente.id);
+
+    if (emprestimosAtivos.length > 0) {
+        throw new Error("Usuário não pode ser removido pois possui empréstimos ativos.");
     }
 
     this.usuarioRepository.removeUsuarioPorCPF(cpf);

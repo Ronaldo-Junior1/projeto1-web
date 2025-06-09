@@ -46,4 +46,14 @@ export class LivroController {
         }
     }
 
+    removerLivro(req: Request, res: Response): void {
+        try {
+            this.livroService.removerLivro(req.params.isbn);
+            res.status(204).send();
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Erro ao remover livro.";
+            res.status(400).json({ message });
+        }
+    }
+
 }

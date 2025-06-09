@@ -44,4 +44,14 @@ export class EstoqueController {
             res.status(400).json({ message });
         }
     }
+
+    removerExemplar(req: Request, res: Response): void {
+        try {
+            this.estoqueService.removerExemplar(Number(req.params.codigo));
+            res.status(204).send();
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Erro ao remover exemplar.";
+            res.status(400).json({ message });
+        }
+    }
 }

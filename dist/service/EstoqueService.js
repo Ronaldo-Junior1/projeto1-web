@@ -2,11 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EstoqueService = void 0;
 const EstoqueEntity_1 = require("../model/EstoqueEntity");
+const EmprestimoRepository_1 = require("../repository/EmprestimoRepository");
 const EstoqueRepository_1 = require("../repository/EstoqueRepository");
 const LivroRepository_1 = require("../repository/LivroRepository");
 class EstoqueService {
     estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
     livroRepository = LivroRepository_1.LivroRepository.getInstance();
+    emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
     novoExemplar(data) {
         const { isbn, codigo_exemplar } = data;
         if (!isbn || !codigo_exemplar) {
@@ -42,23 +44,23 @@ class EstoqueService {
             throw new Error("A nova quantidade não pode ser menor que a quantidade já emprestada.");
         }
         estoque.quantidade = novaQuantidade;
-        // A disponibilidade é reavaliada automaticamente após a mudança de quantidade.
         estoque.disponivel = estoque.quantidade > estoque.quantidade_emprestada;
         return estoque;
     }
     removerExemplar(codigo) {
-        const estoque = this.buscarPorCodigo(codigo);
-        this.estoqueRepository.removeById(codigo);
+        const exemplar = this.buscarPorCodigo(codigo);
+        const emprestimoAtivo = this.emprestimoRepository.findAtivoByEstoqueId(exemplar.id);
+        if (emprestimoAtivo) {
+            throw new Error("Exemplar não pode ser removido pois está emprestado.");
+        }
+        this.estoqueRepository.removeById(exemplar.id);
     }
     registrarEmprestimo(codigo_exemplar) {
         const estoque = this.buscarPorCodigo(codigo_exemplar);
-        // A validação de disponibilidade já foi feita pelo EmprestimoService,
-        // mas uma checagem dupla garante a integridade dos dados.
         if (!estoque.disponivel) {
             throw new Error("Não há exemplares disponíveis para empréstimo (verificação final).");
         }
         estoque.quantidade_emprestada++;
-        // O status 'disponivel' é atualizado automaticamente com base nas contagens.
         estoque.disponivel = estoque.quantidade > estoque.quantidade_emprestada;
     }
     registrarDevolucao(codigo_exemplar) {
@@ -66,7 +68,6 @@ class EstoqueService {
         if (estoque.quantidade_emprestada > 0) {
             estoque.quantidade_emprestada--;
         }
-        // Após uma devolução, o livro sempre volta a ficar disponível.
         estoque.disponivel = true;
     }
 }

@@ -29,9 +29,14 @@ export class EmprestimoRepository {
     return this.emprestimos.filter(e => e.usuario_id === usuario_id && e.data_entrega === null);
   }
 
+  findAtivoByEstoqueId(estoque_id: number): EmprestimoEntity | undefined {
+    return this.emprestimos.find(e => e.estoque_id === estoque_id && e.data_entrega === null);
+  }
+
   countEmprestimosComAtrasoPorUsuario(usuario_id: number): number {
     return this.emprestimos.filter(e => 
             e.usuario_id === usuario_id && e.dias_atraso > 0
     ).length;
   }
+
 }

@@ -62,10 +62,6 @@ export class EmprestimoService {
         if (emprestimo.data_entrega) throw new Error("Este livro já foi devolvido.");
 
         emprestimo.data_entrega = new Date();
-        const dataDeEntregaSimulada = new Date(emprestimo.data_devolucao);
-        dataDeEntregaSimulada.setDate(dataDeEntregaSimulada.getDate() + 21);
-        emprestimo.data_entrega = dataDeEntregaSimulada;
-
         emprestimo.dias_atraso = this.calcularDiasDeAtraso(emprestimo.data_entrega, emprestimo.data_devolucao);
 
         if (emprestimo.dias_atraso > 0) {
