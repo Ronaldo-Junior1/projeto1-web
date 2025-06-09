@@ -26,10 +26,13 @@ export class EstoqueService {
         return novoExemplar;
     }
 
-    listarEstoque() {
-        return this.estoqueRepository.findAll();
-    }
+    listarEstoque(): EstoqueEntity[] {
+        const todosOsExemplares = this.estoqueRepository.findAll();
 
+        const exemplaresDisponiveis = todosOsExemplares.filter(exemplar => exemplar.disponivel === true);
+
+        return exemplaresDisponiveis;
+    }
     buscarPorCodigo(codigo: number): EstoqueEntity {
         const exemplar = this.estoqueRepository.findById(codigo);
         if (!exemplar) {

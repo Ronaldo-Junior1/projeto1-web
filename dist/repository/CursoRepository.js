@@ -16,6 +16,9 @@ class CursoRepository {
         }
         return this.instance;
     }
+    findAll() {
+        return this.cursos;
+    }
     findById(id) {
         return this.cursos.find(c => c.id === id);
     }

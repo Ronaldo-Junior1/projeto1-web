@@ -17,6 +17,10 @@ export class CategoriaUsuarioRepository {
     return this.instance;
   }
 
+  findAll(): CategoriaUsuarioEntity[] {
+    return this.categorias;
+  }
+
   findById(id: number) {
     return this.categorias.find(c => c.id === id);
   }

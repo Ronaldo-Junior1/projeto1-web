@@ -16,6 +16,9 @@ class CategoriaUsuarioRepository {
         }
         return this.instance;
     }
+    findAll() {
+        return this.categorias;
+    }
     findById(id) {
         return this.categorias.find(c => c.id === id);
     }

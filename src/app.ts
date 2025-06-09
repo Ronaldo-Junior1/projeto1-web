@@ -3,11 +3,17 @@ import { UsuarioController } from "./controller/UsuarioController";
 import { LivroController } from "./controller/LivroController";
 import { EstoqueController } from "./controller/EstoqueController";
 import { EmprestimoController } from "./controller/EmprestimoController";
+import { CategoriaLivroController } from "./controller/CategoriaLivroController";
+import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioController";
+import { CursoController } from "./controller/CursoController";
 
 const usuarioController = new UsuarioController();
 const livroController = new LivroController();
 const estoqueController = new EstoqueController();
 const emprestimoController = new EmprestimoController();
+const categoriaLivroController = new CategoriaLivroController();
+const categoriaUsuarioController = new CategoriaUsuarioController();
+const cursoController = new CursoController();
 
 const app = express();
 
@@ -44,5 +50,11 @@ app.post(`${BASE_URL}/emprestimos`, emprestimoController.realizarEmprestimo.bind
 app.get(`${BASE_URL}/emprestimos`, emprestimoController.listarEmprestimos.bind(emprestimoController));
 app.put(`${BASE_URL}/emprestimos/:id/devolucao`, emprestimoController.realizarDevolucao.bind(emprestimoController));
 
+
+// --- Rotas de Catálogos ---
+console.log("Configurando rotas de catálogos...");
+app.get(`${BASE_URL}/catalogos/categorias-usuario`, categoriaUsuarioController.listarCategoriasUsuarios.bind(categoriaUsuarioController));
+app.get(`${BASE_URL}/catalogos/categorias-livro`, categoriaLivroController.listarCategoriasLivros.bind(categoriaLivroController));
+app.get(`${BASE_URL}/catalogos/cursos`, cursoController.listarCursos.bind(cursoController));
 
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));

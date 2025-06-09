@@ -26,7 +26,9 @@ class EstoqueService {
         return novoExemplar;
     }
     listarEstoque() {
-        return this.estoqueRepository.findAll();
+        const todosOsExemplares = this.estoqueRepository.findAll();
+        const exemplaresDisponiveis = todosOsExemplares.filter(exemplar => exemplar.disponivel === true);
+        return exemplaresDisponiveis;
     }
     buscarPorCodigo(codigo) {
         const exemplar = this.estoqueRepository.findById(codigo);

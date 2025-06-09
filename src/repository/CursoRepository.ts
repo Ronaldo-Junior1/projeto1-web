@@ -18,6 +18,10 @@ export class CursoRepository {
     return this.instance;
   }
 
+  findAll(): CursoEntity[] {
+    return this.cursos;
+  }
+
   findById(id: number) {
     return this.cursos.find(c => c.id === id);
   }
