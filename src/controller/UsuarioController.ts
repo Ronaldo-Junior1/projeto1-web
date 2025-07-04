@@ -1,5 +1,3 @@
-// src/controller/UsuarioController.ts
-
 import { Request, Response } from "express";
 import { UsuarioService } from "../service/UsuarioService";
 
