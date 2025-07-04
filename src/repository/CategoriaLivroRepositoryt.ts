@@ -1,4 +1,4 @@
-import { CategoriaLivroEntity } from "../model/CategoriaLivroEntity";
+import { CategoriaLivroEntity } from "../model/entity/CategoriaLivroEntity";
 
 export class CategoriaLivroRepository {
   private static instance: CategoriaLivroRepository;

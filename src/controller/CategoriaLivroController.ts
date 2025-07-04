@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { CategoriaLivroService } from "../service/CategoriaLivroService";
+import { Body, Controller, Delete, Get, Path, Post, Put, Query, Res, Route, Tags, TsoaResponse } from "tsoa";
 
+@Route("categoria-livro")
+@Tags("Categoria-livro")
 export class CategoriaLivroController {
     private service = new CategoriaLivroService();
 

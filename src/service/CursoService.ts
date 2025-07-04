@@ -1,5 +1,5 @@
 import { CursoRepository } from "../repository/CursoRepository";
-import { CursoEntity } from "../model/CursoEntity";
+import { CursoEntity } from "../model/entity/CursoEntity";
 
 export class CursoService {
     private repository = CursoRepository.getInstance();
