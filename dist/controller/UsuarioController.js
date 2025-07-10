@@ -1,5 +1,4 @@
 "use strict";
-// src/controller/UsuarioController.ts
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuarioController = void 0;
 const UsuarioService_1 = require("../service/UsuarioService");

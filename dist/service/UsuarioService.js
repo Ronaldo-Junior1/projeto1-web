@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuarioService = void 0;
-const UsuarioEntity_1 = require("../model/UsuarioEntity");
+const UsuarioEntity_1 = require("../model/entity/UsuarioEntity");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 const CategoriaUsuarioRepository_1 = require("../repository/CategoriaUsuarioRepository");
 const CursoRepository_1 = require("../repository/CursoRepository");

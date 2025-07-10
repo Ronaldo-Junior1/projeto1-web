@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoriaLivroRepository = void 0;
-const CategoriaLivroEntity_1 = require("../model/CategoriaLivroEntity");
+const CategoriaLivroEntity_1 = require("../model/entity/CategoriaLivroEntity");
 class CategoriaLivroRepository {
     static instance;
     categorias = [];
