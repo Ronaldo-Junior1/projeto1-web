@@ -39,8 +39,18 @@ class CategoriaLivroRepository {
         }
         return this.instance;
     }
-    findAll() {
-        return this.categorias;
+    async findAll() {
+        const query = "SELECT * FROM biblioteca.CategoriaLivro";
+        try {
+            const resultado = await (0, mysql_1.executarComandoSQL)(query, []);
+            return new Promise((resolve) => {
+                resolve(resultado);
+            });
+        }
+        catch (err) {
+            console.error(`Falha ao listar as categorias gerando o erro: ${err}`);
+            throw err;
+        }
     }
     findById(id) {
         return this.categorias.find(c => c.id === id);

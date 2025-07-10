@@ -11,6 +11,8 @@ const EmprestimoController_1 = require("./controller/EmprestimoController");
 const CategoriaLivroController_1 = require("./controller/CategoriaLivroController");
 const CategoriaUsuarioController_1 = require("./controller/CategoriaUsuarioController");
 const CursoController_1 = require("./controller/CursoController");
+const routes_1 = require("./route/routes");
+const Swagger_1 = require("./config/Swagger");
 const usuarioController = new UsuarioController_1.UsuarioController();
 const livroController = new LivroController_1.LivroController();
 const estoqueController = new EstoqueController_1.EstoqueController();
@@ -22,6 +24,11 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT ?? 3090;
 const BASE_URL = "/library";
 app.use(express_1.default.json());
+const apiRouter = express_1.default.Router();
+(0, routes_1.RegisterRoutes)(apiRouter);
+app.use('/api', apiRouter);
+(0, routes_1.RegisterRoutes)(app);
+(0, Swagger_1.setupSwagger)(app);
 // --- Rotas de Usuários ---
 app.post(`${BASE_URL}/usuarios`, usuarioController.cadastrarUsuario.bind(usuarioController));
 app.get(`${BASE_URL}/usuarios`, usuarioController.listarUsuarios.bind(usuarioController));
@@ -48,7 +55,7 @@ app.put(`${BASE_URL}/emprestimos/:id/devolucao`, emprestimoController.realizarDe
 // --- Rotas de Catálogos ---
 console.log("Configurando rotas de catálogos...");
 app.get(`${BASE_URL}/catalogos/categorias-usuario`, categoriaUsuarioController.listarCategoriasUsuarios.bind(categoriaUsuarioController));
-app.get(`${BASE_URL}/catalogos/categorias-livro`, categoriaLivroController.listarCategoriasLivros.bind(categoriaLivroController));
+// app.get(`${BASE_URL}/catalogos/categorias-livro`, categoriaLivroController.listarCategoriasLivros.bind(categoriaLivroController));
 app.get(`${BASE_URL}/catalogos/cursos`, cursoController.listarCursos.bind(cursoController));
-app.post(`${BASE_URL}/catalogos/categoria-livro`, categoriaLivroController.cadastrarCategoriaLivro.bind(categoriaLivroController));
+// app.post(`${BASE_URL}/catalogos/categoria-livro`, categoriaLivroController.cadastrarCategoriaLivro.bind(categoriaLivroController));
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));

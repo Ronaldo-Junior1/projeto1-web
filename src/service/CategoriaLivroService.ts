@@ -4,8 +4,10 @@ import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository
 export class CategoriaLivroService {
     private repository = CategoriaLivroRepository.getInstance();
 
-    listarCategoriasLivro(): CategoriaLivroEntity[] {
-        return this.repository.findAll();
+    async listarCategoriasLivro(): Promise<CategoriaLivroEntity[]> {
+       const categorias =  await this.repository.findAll();
+        console.log("Service - Filtrar Todos", categorias);
+        return categorias;
     }
 
     async insertCategoriaLivro(data : any):Promise<CategoriaLivroEntity>{

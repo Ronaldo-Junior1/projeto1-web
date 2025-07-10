@@ -4,8 +4,10 @@ exports.CategoriaLivroService = void 0;
 const CategoriaLivroRepositoryt_1 = require("../repository/CategoriaLivroRepositoryt");
 class CategoriaLivroService {
     repository = CategoriaLivroRepositoryt_1.CategoriaLivroRepository.getInstance();
-    listarCategoriasLivro() {
-        return this.repository.findAll();
+    async listarCategoriasLivro() {
+        const categorias = await this.repository.findAll();
+        console.log("Service - Filtrar Todos", categorias);
+        return categorias;
     }
     async insertCategoriaLivro(data) {
         if (!data.nome) {

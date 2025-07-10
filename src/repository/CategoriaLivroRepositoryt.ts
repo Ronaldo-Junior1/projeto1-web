@@ -46,8 +46,18 @@ export class CategoriaLivroRepository {
     return this.instance;
   }
 
-  findAll(): CategoriaLivroEntity[] {
-    return this.categorias;
+  async findAll(): Promise<CategoriaLivroEntity[]> {
+     const query = "SELECT * FROM biblioteca.CategoriaLivro" ;
+
+        try {
+            const resultado = await executarComandoSQL(query, []);
+            return new Promise<CategoriaLivroEntity[]>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao listar as categorias gerando o erro: ${err}`);
+            throw err;
+        }
   }
 
   findById(id: number): CategoriaLivroEntity | undefined {

@@ -6,6 +6,8 @@ import { EmprestimoController } from "./controller/EmprestimoController";
 import { CategoriaLivroController } from "./controller/CategoriaLivroController";
 import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioController";
 import { CursoController } from "./controller/CursoController";
+import { RegisterRoutes } from './route/routes';
+import { setupSwagger } from "./config/Swagger";
 
 const usuarioController = new UsuarioController();
 const livroController = new LivroController();
@@ -21,6 +23,16 @@ const PORT =  process.env.PORT ?? 3090;
 const BASE_URL = "/library";
 
 app.use(express.json());
+
+const apiRouter = express.Router();
+RegisterRoutes(apiRouter);
+
+
+app.use('/api', apiRouter);
+
+RegisterRoutes(app);
+
+setupSwagger(app);
 
 // --- Rotas de Usuários ---
 app.post(`${BASE_URL}/usuarios`, usuarioController.cadastrarUsuario.bind(usuarioController));
@@ -54,9 +66,9 @@ app.put(`${BASE_URL}/emprestimos/:id/devolucao`, emprestimoController.realizarDe
 // --- Rotas de Catálogos ---
 console.log("Configurando rotas de catálogos...");
 app.get(`${BASE_URL}/catalogos/categorias-usuario`, categoriaUsuarioController.listarCategoriasUsuarios.bind(categoriaUsuarioController));
-app.get(`${BASE_URL}/catalogos/categorias-livro`, categoriaLivroController.listarCategoriasLivros.bind(categoriaLivroController));
+// app.get(`${BASE_URL}/catalogos/categorias-livro`, categoriaLivroController.listarCategoriasLivros.bind(categoriaLivroController));
 app.get(`${BASE_URL}/catalogos/cursos`, cursoController.listarCursos.bind(cursoController));
 
-app.post(`${BASE_URL}/catalogos/categoria-livro`, categoriaLivroController.cadastrarCategoriaLivro.bind(categoriaLivroController));
+// app.post(`${BASE_URL}/catalogos/categoria-livro`, categoriaLivroController.cadastrarCategoriaLivro.bind(categoriaLivroController));
 
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
