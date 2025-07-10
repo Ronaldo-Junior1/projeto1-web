@@ -1,4 +1,5 @@
 import { CategoriaLivroEntity } from "../model/entity/CategoriaLivroEntity";
+import { executarComandoSQL } from "../database/mysql";
 
 export class CategoriaLivroRepository {
   private static instance: CategoriaLivroRepository;
@@ -9,7 +10,24 @@ export class CategoriaLivroRepository {
     this.categorias.push(new CategoriaLivroEntity(2, "Letras"));
     this.categorias.push(new CategoriaLivroEntity(3, "Gestão"));
     this.categorias.push(new CategoriaLivroEntity(4, "Romance"));
+    this.createTable();
   }
+
+
+  private async createTable() {
+        const query = `
+        CREATE TABLE IF NOT EXISTS biblioteca.CategoriaLivro (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nome VARCHAR(255) NOT NULL
+        )`;
+
+        try {
+                const resultado =  await executarComandoSQL(query, []);
+                console.log('Query executada com sucesso:', resultado);
+        } catch (err) {
+            console.error('Error: ' + err);
+        }
+    }
 
   static getInstance(): CategoriaLivroRepository {
     if (!this.instance) {
