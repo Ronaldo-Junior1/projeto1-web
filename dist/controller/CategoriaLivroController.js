@@ -11,6 +11,18 @@ const CategoriaLivroService_1 = require("../service/CategoriaLivroService");
 const tsoa_1 = require("tsoa");
 let CategoriaLivroController = class CategoriaLivroController {
     service = new CategoriaLivroService_1.CategoriaLivroService();
+    async cadastrarCategoriaLivro(req, res) {
+        try {
+            const newCategoriaLivro = await this.service.insertCategoriaLivro(req.body);
+            res.status(201).json(newCategoriaLivro);
+        }
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Erro ao criar a categoria de livro.';
+            res.status(400).json({
+                message: message,
+            });
+        }
+    }
     listarCategoriasLivros(req, res) {
         try {
             const categorias = this.service.listarCategoriasLivro();

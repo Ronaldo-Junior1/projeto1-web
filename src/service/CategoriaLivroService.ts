@@ -7,4 +7,11 @@ export class CategoriaLivroService {
     listarCategoriasLivro(): CategoriaLivroEntity[] {
         return this.repository.findAll();
     }
+
+    async insertCategoriaLivro(data : any):Promise<CategoriaLivroEntity>{
+        if(!data.nome){
+            throw new Error('Favor informar o nome')
+        }
+        return this.repository.insertCategoriaLivro(data.nome)
+    }
 }

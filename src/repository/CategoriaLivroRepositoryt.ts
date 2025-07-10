@@ -29,6 +29,16 @@ export class CategoriaLivroRepository {
         }
     }
 
+  async insertCategoriaLivro(nome: string): Promise<CategoriaLivroEntity>{
+            const resultado = await executarComandoSQL(
+                "INSERT INTO biblioteca.CategoriaLivro (nome) VALUES (?)",
+                [nome]
+            );
+            const newCategoriaLivro = new CategoriaLivroEntity(resultado.insertId,nome)
+            console.log('Categoria Livro inserida com sucesso:', newCategoriaLivro);
+            return newCategoriaLivro
+  }
+
   static getInstance(): CategoriaLivroRepository {
     if (!this.instance) {
       this.instance = new CategoriaLivroRepository();

@@ -57,4 +57,6 @@ app.get(`${BASE_URL}/catalogos/categorias-usuario`, categoriaUsuarioController.l
 app.get(`${BASE_URL}/catalogos/categorias-livro`, categoriaLivroController.listarCategoriasLivros.bind(categoriaLivroController));
 app.get(`${BASE_URL}/catalogos/cursos`, cursoController.listarCursos.bind(cursoController));
 
+app.post(`${BASE_URL}/catalogos/categoria-livro`, categoriaLivroController.cadastrarCategoriaLivro.bind(categoriaLivroController));
+
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));

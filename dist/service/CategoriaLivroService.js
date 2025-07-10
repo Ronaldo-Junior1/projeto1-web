@@ -7,5 +7,11 @@ class CategoriaLivroService {
     listarCategoriasLivro() {
         return this.repository.findAll();
     }
+    async insertCategoriaLivro(data) {
+        if (!data.nome) {
+            throw new Error('Favor informar o nome');
+        }
+        return this.repository.insertCategoriaLivro(data.nome);
+    }
 }
 exports.CategoriaLivroService = CategoriaLivroService;

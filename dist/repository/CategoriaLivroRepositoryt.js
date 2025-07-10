@@ -27,6 +27,12 @@ class CategoriaLivroRepository {
             console.error('Error: ' + err);
         }
     }
+    async insertCategoriaLivro(nome) {
+        const resultado = await (0, mysql_1.executarComandoSQL)("INSERT INTO biblioteca.CategoriaLivro (nome) VALUES (?)", [nome]);
+        const newCategoriaLivro = new CategoriaLivroEntity_1.CategoriaLivroEntity(resultado.insertId, nome);
+        console.log('Categoria Livro inserida com sucesso:', newCategoriaLivro);
+        return newCategoriaLivro;
+    }
     static getInstance() {
         if (!this.instance) {
             this.instance = new CategoriaLivroRepository();
