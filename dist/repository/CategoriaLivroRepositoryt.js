@@ -52,6 +52,7 @@ class CategoriaLivroRepository {
             throw err;
         }
     }
+    //to-do
     findById(id) {
         return this.categorias.find(c => c.id === id);
     }

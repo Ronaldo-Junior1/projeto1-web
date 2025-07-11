@@ -16,7 +16,7 @@ export class CategoriaLivroController {
         @Res() success: TsoaResponse<201, BasicResponseDto>): Promise<void>{
         try{
             const newCategoriaLivro = await this.service.insertCategoriaLivro(dto)
-            return success(201, new BasicResponseDto("Produto criado com sucesso!", newCategoriaLivro));
+            return success(201, new BasicResponseDto("Categoria de livro criado com sucesso!", newCategoriaLivro));
         }catch(error: any){
             return fail(400, new BasicResponseDto(error.message, undefined));
         }

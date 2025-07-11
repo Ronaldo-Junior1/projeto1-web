@@ -22,7 +22,7 @@ let CategoriaLivroController = class CategoriaLivroController {
     async cadastrarCategoriaLivro(dto, fail, success) {
         try {
             const newCategoriaLivro = await this.service.insertCategoriaLivro(dto);
-            return success(201, new BasicResponseDto_1.BasicResponseDto("Produto criado com sucesso!", newCategoriaLivro));
+            return success(201, new BasicResponseDto_1.BasicResponseDto("Categoria de livro criado com sucesso!", newCategoriaLivro));
         }
         catch (error) {
             return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));

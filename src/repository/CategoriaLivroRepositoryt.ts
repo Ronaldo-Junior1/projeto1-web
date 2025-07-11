@@ -60,6 +60,7 @@ export class CategoriaLivroRepository {
         }
   }
 
+  //to-do
   findById(id: number): CategoriaLivroEntity | undefined {
     return this.categorias.find(c => c.id === id);
   }

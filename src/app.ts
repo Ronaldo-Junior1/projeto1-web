@@ -65,7 +65,7 @@ app.put(`${BASE_URL}/emprestimos/:id/devolucao`, emprestimoController.realizarDe
 
 // --- Rotas de Catálogos ---
 console.log("Configurando rotas de catálogos...");
-app.get(`${BASE_URL}/catalogos/categorias-usuario`, categoriaUsuarioController.listarCategoriasUsuarios.bind(categoriaUsuarioController));
+//app.get(`${BASE_URL}/catalogos/categorias-usuario`, categoriaUsuarioController.listarCategoriasUsuarios.bind(categoriaUsuarioController));
 // app.get(`${BASE_URL}/catalogos/categorias-livro`, categoriaLivroController.listarCategoriasLivros.bind(categoriaLivroController));
 app.get(`${BASE_URL}/catalogos/cursos`, cursoController.listarCursos.bind(cursoController));
 
