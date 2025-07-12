@@ -9,11 +9,5 @@ class CategoriaLivroService {
         console.log("Service - Filtrar Todos", categorias);
         return categorias;
     }
-    async insertCategoriaLivro(data) {
-        if (!data.nome) {
-            throw new Error('Favor informar o nome');
-        }
-        return this.repository.insertCategoriaLivro(data.nome);
-    }
 }
 exports.CategoriaLivroService = CategoriaLivroService;

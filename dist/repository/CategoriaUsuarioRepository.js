@@ -2,14 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoriaUsuarioRepository = void 0;
 const mysql_1 = require("../database/mysql");
-const CategoriaUsuarioEntity_1 = require("../model/entity/CategoriaUsuarioEntity");
 class CategoriaUsuarioRepository {
     static instance;
     categorias = [];
     constructor() {
-        this.categorias.push(new CategoriaUsuarioEntity_1.CategoriaUsuarioEntity(1, "Professor"));
-        this.categorias.push(new CategoriaUsuarioEntity_1.CategoriaUsuarioEntity(2, "Aluno"));
-        this.categorias.push(new CategoriaUsuarioEntity_1.CategoriaUsuarioEntity(3, "Bibliotecário"));
         this.createTable();
     }
     async createTable() {
@@ -29,7 +25,7 @@ class CategoriaUsuarioRepository {
                 for (const nome of categoriasIniciais) {
                     await (0, mysql_1.executarComandoSQL)(`INSERT INTO biblioteca.CategoriaUsuario (nome) VALUES (?)`, [nome]);
                 }
-                console.log("Categorias inicias inseridas com sucesso.");
+                console.log("Categorias iniciais inseridas com sucesso.");
             }
         }
         catch (err) {

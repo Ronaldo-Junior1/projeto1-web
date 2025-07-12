@@ -6,10 +6,6 @@ export class CategoriaLivroRepository {
   private categorias: CategoriaLivroEntity[] = [];
 
   private constructor() {
-    this.categorias.push(new CategoriaLivroEntity(1, "Computação"));
-    this.categorias.push(new CategoriaLivroEntity(2, "Letras"));
-    this.categorias.push(new CategoriaLivroEntity(3, "Gestão"));
-    this.categorias.push(new CategoriaLivroEntity(4, "Romance"));
     this.createTable();
   }
 
@@ -22,22 +18,22 @@ export class CategoriaLivroRepository {
         )`;
 
         try {
-                const resultado =  await executarComandoSQL(query, []);
-                console.log('Query executada com sucesso:', resultado);
-        } catch (err) {
+            const resultado =  await executarComandoSQL(query, []);
+            console.log('Query executada com sucesso:', resultado);
+            const queryCount = `SELECT COUNT(*) as total FROM biblioteca.CategoriaLivro`;
+            const resultadoCount = await executarComandoSQL(queryCount, []);
+            const total = resultadoCount[0].total;
+            if (total === 0) {
+            const categoriasIniciais = ["Computação", "Letras", "Gestão","Romance"];
+            for (const nome of categoriasIniciais) {
+              await executarComandoSQL(`INSERT INTO biblioteca.CategoriaLivro (nome) VALUES (?)`, [nome]);
+            }
+            console.log("Categorias iniciais inseridas com sucesso.");
+            }
+          }catch (err) {
             console.error('Error: ' + err);
-        }
+          }
     }
-
-  async insertCategoriaLivro(nome: string): Promise<CategoriaLivroEntity>{
-            const resultado = await executarComandoSQL(
-                "INSERT INTO biblioteca.CategoriaLivro (nome) VALUES (?)",
-                [nome]
-            );
-            const newCategoriaLivro = new CategoriaLivroEntity(resultado.insertId,nome)
-            console.log('Categoria Livro inserida com sucesso:', newCategoriaLivro);
-            return newCategoriaLivro
-  }
 
   static getInstance(): CategoriaLivroRepository {
     if (!this.instance) {

@@ -1,16 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoriaLivroRepository = void 0;
-const CategoriaLivroEntity_1 = require("../model/entity/CategoriaLivroEntity");
 const mysql_1 = require("../database/mysql");
 class CategoriaLivroRepository {
     static instance;
     categorias = [];
     constructor() {
-        this.categorias.push(new CategoriaLivroEntity_1.CategoriaLivroEntity(1, "Computação"));
-        this.categorias.push(new CategoriaLivroEntity_1.CategoriaLivroEntity(2, "Letras"));
-        this.categorias.push(new CategoriaLivroEntity_1.CategoriaLivroEntity(3, "Gestão"));
-        this.categorias.push(new CategoriaLivroEntity_1.CategoriaLivroEntity(4, "Romance"));
         this.createTable();
     }
     async createTable() {
@@ -22,16 +17,20 @@ class CategoriaLivroRepository {
         try {
             const resultado = await (0, mysql_1.executarComandoSQL)(query, []);
             console.log('Query executada com sucesso:', resultado);
+            const queryCount = `SELECT COUNT(*) as total FROM biblioteca.CategoriaLivro`;
+            const resultadoCount = await (0, mysql_1.executarComandoSQL)(queryCount, []);
+            const total = resultadoCount[0].total;
+            if (total === 0) {
+                const categoriasIniciais = ["Computação", "Letras", "Gestão", "Romance"];
+                for (const nome of categoriasIniciais) {
+                    await (0, mysql_1.executarComandoSQL)(`INSERT INTO biblioteca.CategoriaLivro (nome) VALUES (?)`, [nome]);
+                }
+                console.log("Categorias iniciais inseridas com sucesso.");
+            }
         }
         catch (err) {
             console.error('Error: ' + err);
         }
-    }
-    async insertCategoriaLivro(nome) {
-        const resultado = await (0, mysql_1.executarComandoSQL)("INSERT INTO biblioteca.CategoriaLivro (nome) VALUES (?)", [nome]);
-        const newCategoriaLivro = new CategoriaLivroEntity_1.CategoriaLivroEntity(resultado.insertId, nome);
-        console.log('Categoria Livro inserida com sucesso:', newCategoriaLivro);
-        return newCategoriaLivro;
     }
     static getInstance() {
         if (!this.instance) {
