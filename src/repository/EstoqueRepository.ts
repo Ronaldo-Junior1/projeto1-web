@@ -101,4 +101,17 @@ export class EstoqueRepository {
             throw err;
         }
     }
+
+     async findAllDisponiveis(): Promise<EstoqueEntity[]> {
+        const query = "SELECT * FROM biblioteca.Estoque WHERE disponivel = TRUE";
+        try {
+            const resultado = await executarComandoSQL(query, []);
+            resultado.forEach((item: any) => item.disponivel = !!item.disponivel);
+            console.log('Exemplares disponíveis listados com sucesso.');
+            return new Promise(resolve => resolve(resultado));
+        } catch (err) {
+            console.error('Falha ao listar exemplares disponíveis:', err);
+            throw err;
+        }
+    }
 }
