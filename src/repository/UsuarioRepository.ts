@@ -2,10 +2,13 @@ import { executarComandoSQL } from "../database/mysql";
 import { UsuarioEntity } from "../model/entity/UsuarioEntity";
 
 export class UsuarioRepository {
+  private static instance: UsuarioRepository;
 
-    constructor() {
+    private constructor() {
         this.createTable();
     }
+
+    
 
     private async createTable() {
         const query = `
@@ -124,4 +127,13 @@ export class UsuarioRepository {
             throw err;
         }
     }
+
+
+    static getInstance(): UsuarioRepository {
+    if (!this.instance) {
+      this.instance = new UsuarioRepository();
+    }
+    return this.instance;
+  }
+
 }
