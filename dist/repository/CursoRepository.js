@@ -4,7 +4,6 @@ exports.CursoRepository = void 0;
 const mysql_1 = require("../database/mysql");
 class CursoRepository {
     static instance;
-    cursos = [];
     constructor() {
         this.createTable();
     }

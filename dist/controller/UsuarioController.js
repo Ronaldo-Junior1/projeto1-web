@@ -1,76 +1,118 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuarioController = void 0;
+const tsoa_1 = require("tsoa");
 const UsuarioService_1 = require("../service/UsuarioService");
-class UsuarioController {
+const BasicResponseDto_1 = require("../model/dto/BasicResponseDto");
+const UsuarioRequestDto_1 = require("../model/dto/UsuarioRequestDto");
+const UsuarioUpdateRequestDto_1 = require("../model/dto/UsuarioUpdateRequestDto");
+let UsuarioController = class UsuarioController extends tsoa_1.Controller {
     usuarioService = new UsuarioService_1.UsuarioService();
-    cadastrarUsuario(req, res) {
+    async cadastrarUsuario(dto, fail, success) {
         try {
-            const novoUsuario = this.usuarioService.novoUsuario(req.body);
-            res.status(201).json(novoUsuario);
+            const novoUsuario = await this.usuarioService.novoUsuario(dto);
+            return success(201, new BasicResponseDto_1.BasicResponseDto("Usuário cadastrado com sucesso!", novoUsuario));
         }
         catch (error) {
-            let message = "Não foi possível cadastrar o usuário.";
-            if (error instanceof Error) {
-                message = error.message;
-            }
-            res.status(400).json({ message });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-    listarUsuarios(req, res) {
+    async listarUsuarios(notFound, success) {
         try {
-            const usuarios = this.usuarioService.listarUsuarios();
-            res.status(200).json(usuarios);
+            const usuarios = await this.usuarioService.listarUsuarios();
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Usuários listados com sucesso!", usuarios));
         }
         catch (error) {
-            res.status(500).json({ message: "Ocorreu um erro ao buscar os usuários." });
+            return notFound(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-    detalharUsuario(req, res) {
+    async detalharUsuario(cpf, notFound, success) {
         try {
-            const { cpf } = req.params;
-            const usuario = this.usuarioService.buscarUsuarioPorCPF(cpf);
-            if (!usuario) {
-                res.status(404).json({ message: "Usuário não encontrado." });
-            }
-            res.status(200).json(usuario);
+            const usuario = await this.usuarioService.buscarUsuarioPorCPF(cpf);
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Usuário encontrado com sucesso!", usuario));
         }
         catch (error) {
-            let message = "Ocorreu um erro ao buscar o usuário.";
-            if (error instanceof Error) {
-                message = error.message;
-            }
-            res.status(400).json({ message });
+            return notFound(404, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-    atualizarUsuario(req, res) {
+    async atualizarUsuario(cpf, dto, notFound, success) {
         try {
-            const { cpf } = req.params;
-            const dadosAtualizados = req.body;
-            const usuarioAtualizado = this.usuarioService.atualizarUsuario(cpf, dadosAtualizados);
-            res.status(200).json(usuarioAtualizado);
+            const usuarioAtualizado = await this.usuarioService.atualizarUsuario(cpf, dto);
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Usuário atualizado com sucesso!", usuarioAtualizado));
         }
         catch (error) {
-            let message = "Não foi possível atualizar o usuário.";
-            if (error instanceof Error) {
-                message = error.message;
-            }
-            res.status(400).json({ message });
+            return notFound(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-    removerUsuario(req, res) {
+    async removerUsuario(cpf, notFound, noContent) {
         try {
-            const { cpf } = req.params;
-            this.usuarioService.removeUsuario(cpf);
-            res.status(204).send();
+            await this.usuarioService.removerUsuario(cpf);
+            return noContent(204);
         }
         catch (error) {
-            let message = "Não foi possível remover o usuário.";
-            if (error instanceof Error) {
-                message = error.message;
-            }
-            res.status(400).json({ message });
+            return notFound(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-}
+};
 exports.UsuarioController = UsuarioController;
+__decorate([
+    (0, tsoa_1.Post)(),
+    __param(0, (0, tsoa_1.Body)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [UsuarioRequestDto_1.UsuarioRequestDto, Function, Function]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "cadastrarUsuario", null);
+__decorate([
+    (0, tsoa_1.Get)(),
+    __param(0, (0, tsoa_1.Res)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Function, Function]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "listarUsuarios", null);
+__decorate([
+    (0, tsoa_1.Get)("{cpf}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Function, Function]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "detalharUsuario", null);
+__decorate([
+    (0, tsoa_1.Put)("{cpf}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __param(3, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, UsuarioUpdateRequestDto_1.UsuarioUpdateRequestDto, Function, Function]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "atualizarUsuario", null);
+__decorate([
+    (0, tsoa_1.Delete)("{cpf}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Function, Function]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "removerUsuario", null);
+exports.UsuarioController = UsuarioController = __decorate([
+    (0, tsoa_1.Route)("usuarios"),
+    (0, tsoa_1.Tags)("Usuario")
+], UsuarioController);
