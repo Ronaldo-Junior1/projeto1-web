@@ -4,7 +4,9 @@ import { CursoEntity } from "../model/entity/CursoEntity";
 export class CursoService {
     private repository = CursoRepository.getInstance();
 
-    listarCursos(): CursoEntity[] {
-        return this.repository.findAll();
+    async listarCursos(): Promise<CursoEntity[]> {
+        const cursos =  await this.repository.findAll();
+        console.log("Service - Filtrar Todos", cursos);
+        return cursos;
     }
 }

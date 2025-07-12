@@ -3,8 +3,6 @@ import { UsuarioController } from "./controller/UsuarioController";
 import { LivroController } from "./controller/LivroController";
 import { EstoqueController } from "./controller/EstoqueController";
 import { EmprestimoController } from "./controller/EmprestimoController";
-import { CategoriaLivroController } from "./controller/CategoriaLivroController";
-import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioController";
 import { CursoController } from "./controller/CursoController";
 import { RegisterRoutes } from './route/routes';
 import { setupSwagger } from "./config/Swagger";
@@ -13,8 +11,6 @@ const usuarioController = new UsuarioController();
 const livroController = new LivroController();
 const estoqueController = new EstoqueController();
 const emprestimoController = new EmprestimoController();
-const categoriaLivroController = new CategoriaLivroController();
-const categoriaUsuarioController = new CategoriaUsuarioController();
 const cursoController = new CursoController();
 
 const app = express();
