@@ -3,7 +3,6 @@ import { UsuarioController } from "./controller/UsuarioController";
 import { LivroController } from "./controller/LivroController";
 import { EstoqueController } from "./controller/EstoqueController";
 import { EmprestimoController } from "./controller/EmprestimoController";
-import { CursoController } from "./controller/CursoController";
 import { RegisterRoutes } from './route/routes';
 import { setupSwagger } from "./config/Swagger";
 
@@ -11,7 +10,6 @@ const usuarioController = new UsuarioController();
 const livroController = new LivroController();
 const estoqueController = new EstoqueController();
 const emprestimoController = new EmprestimoController();
-const cursoController = new CursoController();
 
 const app = express();
 
@@ -24,7 +22,7 @@ const apiRouter = express.Router();
 RegisterRoutes(apiRouter);
 
 
-app.use('/api', apiRouter);
+app.use("/library", apiRouter);
 
 RegisterRoutes(app);
 
@@ -38,11 +36,11 @@ app.put(`${BASE_URL}/usuarios/:cpf`, usuarioController.atualizarUsuario.bind(usu
 app.delete(`${BASE_URL}/usuarios/:cpf`, usuarioController.removerUsuario.bind(usuarioController));
 
 // --- Rotas de Livros ---
-app.post(`${BASE_URL}/livros`, livroController.cadastrarLivro.bind(livroController));
-app.get(`${BASE_URL}/livros`, livroController.listarLivros.bind(livroController));
-app.get(`${BASE_URL}/livros/:isbn`, livroController.detalharLivro.bind(livroController));
-app.put(`${BASE_URL}/livros/:isbn`, livroController.atualizarLivro.bind(livroController));
-app.delete(`${BASE_URL}/livros/:isbn`, livroController.removerLivro.bind(livroController));
+// app.post(`${BASE_URL}/livros`, livroController.cadastrarLivro.bind(livroController));
+// app.get(`${BASE_URL}/livros`, livroController.listarLivros.bind(livroController));
+// app.get(`${BASE_URL}/livros/:isbn`, livroController.detalharLivro.bind(livroController));
+// app.put(`${BASE_URL}/livros/:isbn`, livroController.atualizarLivro.bind(livroController));
+// app.delete(`${BASE_URL}/livros/:isbn`, livroController.removerLivro.bind(livroController));
 
 
 // --- Rotas de Estoque ---
@@ -60,10 +58,10 @@ app.put(`${BASE_URL}/emprestimos/:id/devolucao`, emprestimoController.realizarDe
 
 
 // --- Rotas de Catálogos ---
-console.log("Configurando rotas de catálogos...");
+// console.log("Configurando rotas de catálogos...");
 //app.get(`${BASE_URL}/catalogos/categorias-usuario`, categoriaUsuarioController.listarCategoriasUsuarios.bind(categoriaUsuarioController));
 // app.get(`${BASE_URL}/catalogos/categorias-livro`, categoriaLivroController.listarCategoriasLivros.bind(categoriaLivroController));
-app.get(`${BASE_URL}/catalogos/cursos`, cursoController.listarCursos.bind(cursoController));
+// app.get(`${BASE_URL}/catalogos/cursos`, cursoController.listarCursos.bind(cursoController));
 
 // app.post(`${BASE_URL}/catalogos/categoria-livro`, categoriaLivroController.cadastrarCategoriaLivro.bind(categoriaLivroController));
 

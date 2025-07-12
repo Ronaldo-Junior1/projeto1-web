@@ -15,7 +15,7 @@
         },
         "servers": [
           {
-            "url": "http://localhost:3090/api",
+            "url": "http://localhost:3090/library",
             "description": "Servidor de Desenvolvimento"
           }
         ]
