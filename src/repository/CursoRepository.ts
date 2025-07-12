@@ -3,8 +3,6 @@ import { CursoEntity } from "../model/entity/CursoEntity";
 
 export class CursoRepository {
   private static instance: CursoRepository;
-   private cursos: CursoEntity[] = [];
-
 
   private constructor() {
     this.createTable();

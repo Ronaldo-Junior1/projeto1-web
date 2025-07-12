@@ -3,7 +3,6 @@ import { executarComandoSQL } from "../database/mysql";
 
 export class LivroRepository {
   private static instance: LivroRepository;
-  private livros: LivroEntity[] = [];
 
   private constructor() {
     this.createTable();

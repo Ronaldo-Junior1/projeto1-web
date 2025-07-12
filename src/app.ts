@@ -2,14 +2,14 @@ import express from "express";
 import { UsuarioController } from "./controller/UsuarioController";
 import { LivroController } from "./controller/LivroController";
 import { EstoqueController } from "./controller/EstoqueController";
-import { EmprestimoController } from "./controller/EmprestimoController";
+// import { EmprestimoController } from "./controller/EmprestimoController";
 import { RegisterRoutes } from './route/routes';
 import { setupSwagger } from "./config/Swagger";
 
 const usuarioController = new UsuarioController();
 const livroController = new LivroController();
 const estoqueController = new EstoqueController();
-const emprestimoController = new EmprestimoController();
+// const emprestimoController = new EmprestimoController();
 
 const app = express();
 
@@ -28,12 +28,12 @@ RegisterRoutes(app);
 
 setupSwagger(app);
 
-// --- Rotas de Usuários ---
-app.post(`${BASE_URL}/usuarios`, usuarioController.cadastrarUsuario.bind(usuarioController));
-app.get(`${BASE_URL}/usuarios`, usuarioController.listarUsuarios.bind(usuarioController));
-app.get(`${BASE_URL}/usuarios/:cpf`, usuarioController.detalharUsuario.bind(usuarioController));
-app.put(`${BASE_URL}/usuarios/:cpf`, usuarioController.atualizarUsuario.bind(usuarioController));
-app.delete(`${BASE_URL}/usuarios/:cpf`, usuarioController.removerUsuario.bind(usuarioController));
+// // --- Rotas de Usuários ---
+// app.post(`${BASE_URL}/usuarios`, usuarioController.cadastrarUsuario.bind(usuarioController));
+// app.get(`${BASE_URL}/usuarios`, usuarioController.listarUsuarios.bind(usuarioController));
+// app.get(`${BASE_URL}/usuarios/:cpf`, usuarioController.detalharUsuario.bind(usuarioController));
+// app.put(`${BASE_URL}/usuarios/:cpf`, usuarioController.atualizarUsuario.bind(usuarioController));
+// app.delete(`${BASE_URL}/usuarios/:cpf`, usuarioController.removerUsuario.bind(usuarioController));
 
 // --- Rotas de Livros ---
 // app.post(`${BASE_URL}/livros`, livroController.cadastrarLivro.bind(livroController));
@@ -45,16 +45,16 @@ app.delete(`${BASE_URL}/usuarios/:cpf`, usuarioController.removerUsuario.bind(us
 
 // --- Rotas de Estoque ---
 // app.post(`${BASE_URL}/estoque`, estoqueController.cadastrarExemplar.bind(estoqueController));
-app.get(`${BASE_URL}/estoque`, estoqueController.listarExemplares.bind(estoqueController));
-app.get(`${BASE_URL}/estoque/:codigo`, estoqueController.detalharExemplar.bind(estoqueController));
-app.put(`${BASE_URL}/estoque/:codigo`, estoqueController.atualizarDisponibilidade.bind(estoqueController));
-app.delete(`${BASE_URL}/estoque/:codigo`, estoqueController.removerExemplar.bind(estoqueController));
+// app.get(`${BASE_URL}/estoque`, estoqueController.listarExemplares.bind(estoqueController));
+// app.get(`${BASE_URL}/estoque/:codigo`, estoqueController.detalharExemplar.bind(estoqueController));
+// app.put(`${BASE_URL}/estoque/:codigo`, estoqueController.atualizarDisponibilidade.bind(estoqueController));
+// app.delete(`${BASE_URL}/estoque/:codigo`, estoqueController.removerExemplar.bind(estoqueController));
 
-// --- Rotas de Empréstimos ---
-console.log("Configurando rotas de empréstimos...");
-app.post(`${BASE_URL}/emprestimos`, emprestimoController.realizarEmprestimo.bind(emprestimoController));
-app.get(`${BASE_URL}/emprestimos`, emprestimoController.listarEmprestimos.bind(emprestimoController));
-app.put(`${BASE_URL}/emprestimos/:id/devolucao`, emprestimoController.realizarDevolucao.bind(emprestimoController));
+// // --- Rotas de Empréstimos ---
+// console.log("Configurando rotas de empréstimos...");
+// app.post(`${BASE_URL}/emprestimos`, emprestimoController.realizarEmprestimo.bind(emprestimoController));
+// app.get(`${BASE_URL}/emprestimos`, emprestimoController.listarEmprestimos.bind(emprestimoController));
+// app.put(`${BASE_URL}/emprestimos/:id/devolucao`, emprestimoController.realizarDevolucao.bind(emprestimoController));
 
 
 // --- Rotas de Catálogos ---

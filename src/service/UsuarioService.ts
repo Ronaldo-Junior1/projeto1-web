@@ -1,3 +1,4 @@
+import { StatusUsuario } from "../model/enum/StatusUsuario";
 import { UsuarioEntity } from "../model/entity/UsuarioEntity";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
 import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
@@ -5,147 +6,114 @@ import { CursoRepository } from "../repository/CursoRepository";
 import { EmprestimoRepository } from "../repository/EmprestimoRepository";
 
 export class UsuarioService {
-  private usuarioRepository = UsuarioRepository.getInstance();
-  private categoriaRepository = CategoriaUsuarioRepository.getInstance();
-  private cursoRepository = CursoRepository.getInstance();
-   private emprestimoRepository = EmprestimoRepository.getInstance(); 
+    private usuarioRepository = UsuarioRepository.getInstance();
+    private categoriaRepository = CategoriaUsuarioRepository.getInstance();
+    private cursoRepository = CursoRepository.getInstance();
+    private emprestimoRepository = EmprestimoRepository.getInstance(); 
 
-  novoUsuario(data: any): UsuarioEntity {
-    const { nome, cpf, categoria_id, curso_id } = data;
+    async novoUsuario(data: any): Promise<UsuarioEntity> {
+        const { nome, cpf, categoria_id, curso_id } = data;
 
-    if (!nome || !cpf || !categoria_id || !curso_id) {
-      throw new Error("Favor informar todos os campos.");
-    }
+        if (!nome || !cpf || !categoria_id || !curso_id) {
+            throw new Error("Favor informar todos os campos obrigatórios.");
+        }
 
-    if (!this.validarCPF(cpf)) {
-      throw new Error("CPF inválido.");
-    }
+        if (!this.validarCPF(cpf)) {
+            throw new Error("CPF inválido.");
+        }
 
-    if (this.usuarioRepository.findByCPF(cpf)) {
-      throw new Error("CPF já cadastrado.");
-    }
-
-    const categoria = this.categoriaRepository.findById(Number(categoria_id));
-    const curso = this.cursoRepository.findById(Number(curso_id));
-
-    if (!categoria) {
-      throw new Error("Categoria informada não existe.");
-    }
-
-    if (!curso) {
-      throw new Error("Curso informado não existe.");
-    }
-
-    const usuario = new UsuarioEntity(nome,cpf,"ativo",categoria_id,curso_id);
-
-    this.usuarioRepository.insereUsuario(usuario);
-    return usuario;
-  }
-
-  listarUsuarios(): UsuarioEntity[] {
-    return this.usuarioRepository.findAll();
-  }
-
-  removeUsuario(cpf: string):void {
-     const usuarioExistente = this.usuarioRepository.findByCPF(cpf);
-    if (!usuarioExistente) {
-      throw new Error("Usuário não encontrado.");
-    }
-
-    const emprestimosAtivos = this.emprestimoRepository.findAtivosByUsuarioId(usuarioExistente.id);
-
-    if (emprestimosAtivos.length > 0) {
-        throw new Error("Usuário não pode ser removido pois possui empréstimos ativos.");
-    }
-
-    this.usuarioRepository.removeUsuarioPorCPF(cpf);
-  }
-  buscarUsuarioPorCPF(cpf: string): UsuarioEntity | undefined{
-    return this.usuarioRepository.findByCPF(cpf);
-  }
-
-  atualizarUsuario(cpf: string, dadosAtualizados: any): UsuarioEntity {
-    const usuario = this.buscarUsuarioPorCPF(cpf);
-
-    if (!usuario) {
-      throw new Error("Usuário não encontrado.");
-    }
-
-    if (dadosAtualizados.ativo) {
-            if (dadosAtualizados.ativo === "ativo") {
-                usuario.ativo = "ativo";
-            } else {
-                throw new Error(`O status só pode ser alterado para 'ativo'. Status '${dadosAtualizados.ativo}' é inválido.`);
+        try {
+            await this.usuarioRepository.filterUsuarioByCpf(cpf);
+            throw new Error("CPF já cadastrado.");
+        } catch (error: any) {
+            if (!error.message.includes("não encontrado")) {
+                throw error;
             }
         }
-
-    if (dadosAtualizados.nome) {
-      usuario.nome = dadosAtualizados.nome;
+        
+        await this.categoriaRepository.findById(categoria_id);
+        await this.cursoRepository.findById(curso_id);
+        
+        const usuario = new UsuarioEntity(nome, cpf, StatusUsuario.ATIVO, categoria_id, curso_id);
+        
+        const novoUsuario = await this.usuarioRepository.insertUsuario(usuario);
+        console.log("Service - Usuário inserido:", novoUsuario);
+        return novoUsuario;
     }
 
-    if (dadosAtualizados.categoria_id) {
-      const categoria = this.categoriaRepository.findById(Number(dadosAtualizados.categoria_id));
-      if (!categoria) throw new Error("Nova categoria informada não existe.");
-      usuario.categoria_id = Number(dadosAtualizados.categoria_id);
+    async listarUsuarios(): Promise<UsuarioEntity[]> {
+        const usuarios = await this.usuarioRepository.filterAllUsuario();
+        console.log("Service - Listar todos os usuários:", usuarios);
+        return usuarios;
     }
-    if (dadosAtualizados.curso_id) {
-      const curso = this.cursoRepository.findById(Number(dadosAtualizados.curso_id));
-      if (!curso) throw new Error("Novo curso informado não existe.");
-      usuario.curso_id = Number(dadosAtualizados.curso_id);
+    
+    async buscarUsuarioPorCPF(cpf: string): Promise<UsuarioEntity> {
+        const usuario = await this.usuarioRepository.filterUsuarioByCpf(cpf);
+        console.log("Service - Buscar usuário por CPF:", usuario);
+        return usuario;
     }
-    return usuario;
-  }
 
-    aplicarSuspensao(cpf: string): void {
-        const usuario = this.usuarioRepository.findByCPF(cpf);
-        if (!usuario) {
-            console.error(`Tentativa de suspender um usuário não encontrado com CPF: ${cpf}`);
-            return;
+    async atualizarUsuario(cpf: string, dadosAtualizados: any): Promise<UsuarioEntity> {
+        const usuario = await this.usuarioRepository.filterUsuarioByCpf(cpf);
+
+        usuario.nome = dadosAtualizados.nome ?? usuario.nome;
+        usuario.status = dadosAtualizados.status ?? usuario.status;
+
+        if (dadosAtualizados.categoria_id) {
+            await this.categoriaRepository.findById(dadosAtualizados.categoria_id);
+            usuario.categoria_id = dadosAtualizados.categoria_id;
         }
-        usuario.ativo = "suspenso";
+        if (dadosAtualizados.curso_id) {
+            await this.cursoRepository.findById(dadosAtualizados.curso_id);
+            usuario.curso_id = dadosAtualizados.curso_id;
+        }
+        
+        await this.usuarioRepository.updateUsuario(usuario);
+        console.log("Service - Usuário atualizado:", usuario);
+        return usuario;
     }
 
+    async removerUsuario(cpf: string): Promise<void> {
+        const usuarioExistente = await this.usuarioRepository.filterUsuarioByCpf(cpf);
+        const emprestimosAtivos = await this.emprestimoRepository.findAtivosByUsuarioId(usuarioExistente.id!);
+        
+        if (emprestimosAtivos.length > 0) {
+            throw new Error("Usuário não pode ser removido pois possui empréstimos ativos.");
+        }
 
-    inativarUsuario(cpf: string): void {
-        const usuario = this.usuarioRepository.findByCPF(cpf);
-        if (!usuario) return;
-
-        usuario.ativo = "inativo";
+        await this.usuarioRepository.deleteUsuario(usuarioExistente.id!);
+        console.log("Service - Usuário removido com CPF:", cpf);
+    }
+    
+    async alterarStatus(cpf: string, novoStatus: StatusUsuario): Promise<UsuarioEntity> {
+        const usuario = await this.usuarioRepository.filterUsuarioByCpf(cpf);
+        usuario.status = novoStatus;
+        await this.usuarioRepository.updateUsuario(usuario);
+        console.log(`Service - Status do usuário ${cpf} alterado para ${novoStatus}`);
+        return usuario;
     }
 
-   private validarCPF(cpf: string): boolean {
-    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
-      return false;
+    private validarCPF(cpf: string): boolean {
+        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+            return false;
+        }
+        const digitos = cpf.split('').map(Number);
+        const calcularDigito = (parteCpf: number[]): number => {
+            const soma = parteCpf.reduce((acc, digito, index) => {
+                const peso = parteCpf.length + 1 - index;
+                return acc + (digito * peso);
+            }, 0);
+            const resto = soma % 11;
+            return resto < 2 ? 0 : 11 - resto;
+        };
+        const primeirosNove = digitos.slice(0, 9);
+        if (calcularDigito(primeirosNove) !== digitos[9]) {
+            return false;
+        }
+        const primeirosDez = digitos.slice(0, 10);
+        if (calcularDigito(primeirosDez) !== digitos[10]) {
+            return false;
+        }
+        return true;
     }
-
-    const digitos = cpf.split('').map(Number);
-
-    const calcularDigito = (parteCpf: number[]): number => {
-      const soma = parteCpf.reduce((acc, digito, index) => {
-        const peso = parteCpf.length + 1 - index;
-        return acc + (digito * peso);
-      }, 0);
-      
-      // Calcula o resto da divisão por 11.
-      const resto = soma % 11;
-
-      // Se o resto for < 2, o dígito é 0; senão, é 11 - resto.
-      return resto < 2 ? 0 : 11 - resto;
-    };
-
-    // --- Validação do primeiro dígito verificador (10º dígito) ---
-    const primeirosNove = digitos.slice(0, 9);
-    if (calcularDigito(primeirosNove) !== digitos[9]) {
-      return false;
-    }
-
-    // --- Validação do segundo dígito verificador (11º dígito) ---
-    const primeirosDez = digitos.slice(0, 10);
-    if (calcularDigito(primeirosDez) !== digitos[10]) {
-      return false;
-    }
-
-    return true; // CPF é válido.
-  }
-
 }
