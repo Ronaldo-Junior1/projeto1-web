@@ -9,11 +9,5 @@ class CategoriaUsuarioService {
         console.log("Service - Filtrar Todos", categorias);
         return categorias;
     }
-    async insertCategoriaUsuario(data) {
-        if (!data.nome) {
-            throw new Error('Favor informar o nome');
-        }
-        return this.repository.insertCategoriaUsuario(data.nome);
-    }
 }
 exports.CategoriaUsuarioService = CategoriaUsuarioService;

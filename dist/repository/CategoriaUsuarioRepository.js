@@ -21,16 +21,20 @@ class CategoriaUsuarioRepository {
         try {
             const resultado = await (0, mysql_1.executarComandoSQL)(query, []);
             console.log('Query executada com sucesso:', resultado);
+            const queryCount = `SELECT COUNT(*) as total FROM biblioteca.CategoriaUsuario`;
+            const resultadoCount = await (0, mysql_1.executarComandoSQL)(queryCount, []);
+            const total = resultadoCount[0].total;
+            if (total === 0) {
+                const categoriasIniciais = ["Professor", "Aluno", "Bibliotecário"];
+                for (const nome of categoriasIniciais) {
+                    await (0, mysql_1.executarComandoSQL)(`INSERT INTO biblioteca.CategoriaUsuario (nome) VALUES (?)`, [nome]);
+                }
+                console.log("Categorias inicias inseridas com sucesso.");
+            }
         }
         catch (err) {
             console.error('Error: ' + err);
         }
-    }
-    async insertCategoriaUsuario(nome) {
-        const resultado = await (0, mysql_1.executarComandoSQL)("INSERT INTO biblioteca.CategoriaUsuario (nome) VALUES (?)", [nome]);
-        const newCategoriaUsuario = new CategoriaUsuarioEntity_1.CategoriaUsuarioEntity(resultado.insertId, nome);
-        console.log('Categoria Usuario inserida com sucesso:', newCategoriaUsuario);
-        return newCategoriaUsuario;
     }
     async findAll() {
         const query = "SELECT * FROM biblioteca.CategoriaUsuario";

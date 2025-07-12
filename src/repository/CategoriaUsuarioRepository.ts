@@ -6,9 +6,6 @@ export class CategoriaUsuarioRepository {
   private categorias: CategoriaUsuarioEntity[] = [];
 
   private constructor() {
-    this.categorias.push(new CategoriaUsuarioEntity(1, "Professor"));
-    this.categorias.push(new CategoriaUsuarioEntity(2, "Aluno"));
-    this.categorias.push(new CategoriaUsuarioEntity(3, "Bibliotecário"));
     this.createTable();
   }
 
@@ -19,25 +16,24 @@ export class CategoriaUsuarioRepository {
               nome VARCHAR(255) NOT NULL
           )`;
   
-          try {
-                  const resultado =  await executarComandoSQL(query, []);
-                  console.log('Query executada com sucesso:', resultado);
-          } catch (err) {
-              console.error('Error: ' + err);
+         try {
+            const resultado =  await executarComandoSQL(query, []);
+            console.log('Query executada com sucesso:', resultado);
+            const queryCount = `SELECT COUNT(*) as total FROM biblioteca.CategoriaUsuario`;
+            const resultadoCount = await executarComandoSQL(queryCount, []);
+            const total = resultadoCount[0].total;
+            if (total === 0) {
+            const categoriasIniciais = ["Professor", "Aluno", "Bibliotecário"];
+            for (const nome of categoriasIniciais) {
+              await executarComandoSQL(`INSERT INTO biblioteca.CategoriaUsuario (nome) VALUES (?)`, [nome]);
+            }
+            console.log("Categorias iniciais inseridas com sucesso.");
+            }
+          }catch (err) {
+            console.error('Error: ' + err);
           }
       }
   
-    async insertCategoriaUsuario(nome: string): Promise<CategoriaUsuarioEntity>{
-              const resultado = await executarComandoSQL(
-                  "INSERT INTO biblioteca.CategoriaUsuario (nome) VALUES (?)",
-                  [nome]
-              );
-              const newCategoriaUsuario = new CategoriaUsuarioEntity(resultado.insertId,nome)
-              console.log('Categoria Usuario inserida com sucesso:', newCategoriaUsuario);
-              return newCategoriaUsuario
-    }
-
-
     async findAll(): Promise<CategoriaUsuarioEntity[]> {
       const query = "SELECT * FROM biblioteca.CategoriaUsuario" ;
  

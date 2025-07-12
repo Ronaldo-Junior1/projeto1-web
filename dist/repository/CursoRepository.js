@@ -2,14 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CursoRepository = void 0;
 const mysql_1 = require("../database/mysql");
-const CursoEntity_1 = require("../model/entity/CursoEntity");
 class CursoRepository {
     static instance;
     cursos = [];
     constructor() {
-        this.cursos.push(new CursoEntity_1.CursoEntity(1, "ADS"));
-        this.cursos.push(new CursoEntity_1.CursoEntity(2, "Pedagogia"));
-        this.cursos.push(new CursoEntity_1.CursoEntity(3, "Administracao"));
         this.createTable();
     }
     async createTable() {
@@ -21,7 +17,7 @@ class CursoRepository {
         try {
             const resultado = await (0, mysql_1.executarComandoSQL)(query, []);
             console.log('Query executada com sucesso:', resultado);
-            const queryCount = `SELECT COUNT(*) as total FROM Curso`;
+            const queryCount = `SELECT COUNT(*) as total FROM biblioteca.Curso`;
             const resultadoCount = await (0, mysql_1.executarComandoSQL)(queryCount, []);
             const total = resultadoCount[0].total;
             if (total === 0) {

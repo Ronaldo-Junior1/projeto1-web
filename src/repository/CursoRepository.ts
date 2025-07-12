@@ -7,9 +7,6 @@ export class CursoRepository {
 
 
   private constructor() {
-    this.cursos.push(new CursoEntity(1, "ADS"));
-    this.cursos.push(new CursoEntity(2, "Pedagogia"));
-    this.cursos.push(new CursoEntity(3, "Administracao"));
     this.createTable();
   }
 
@@ -23,7 +20,7 @@ export class CursoRepository {
           try {
                 const resultado =  await executarComandoSQL(query, []);
                 console.log('Query executada com sucesso:', resultado);
-                const queryCount = `SELECT COUNT(*) as total FROM Curso`;
+                const queryCount = `SELECT COUNT(*) as total FROM biblioteca.Curso`;
                 const resultadoCount = await executarComandoSQL(queryCount, []);
                 const total = resultadoCount[0].total;
                 if (total === 0) {
