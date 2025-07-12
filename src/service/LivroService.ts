@@ -35,8 +35,8 @@ export class LivroService {
             }
         }
 
-        await this.categoriaRepository.findById(Number(categoria_id));
-        const novoLivro = new LivroEntity(titulo, autor, editora, edicao, isbn, Number(categoria_id));
+        await this.categoriaRepository.findById(categoria_id);
+        const novoLivro = new LivroEntity(titulo, autor, editora, edicao, isbn, categoria_id);
         await this.livroRepository.insereLivro(novoLivro);
     
         return novoLivro;
@@ -59,8 +59,8 @@ export class LivroService {
         livro.edicao = dadosAtualizados.edicao ?? livro.edicao;
 
         if (dadosAtualizados.categoria_id) {
-            await this.categoriaRepository.findById(Number(dadosAtualizados.categoria_id));
-            livro.categoria_id = Number(dadosAtualizados.categoria_id);
+            await this.categoriaRepository.findById(dadosAtualizados.categoria_id);
+            livro.categoria_id = dadosAtualizados.categoria_id;
         }
         
         return await this.livroRepository.updateLivroPorIsbn(livro);
@@ -69,7 +69,7 @@ export class LivroService {
     async removerLivro(isbn: string): Promise<void> {
         const livro = await this.buscarLivroPorIsbn(isbn);
 
-        const todosOsExemplares = await this.estoqueRepository.findAllByLivroId(livro.id);
+        const todosOsExemplares = await this.estoqueRepository.findAllByLivroId(Number(livro.id));
 
         for (const exemplar of todosOsExemplares) {
             const emprestimoAtivo = await this.emprestimoRepository.findAtivoByEstoqueId(exemplar.id);

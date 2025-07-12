@@ -37,7 +37,8 @@ class LivroRepository {
         const query = `INSERT INTO biblioteca.Livro (titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)`;
         const params = [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoria_id];
         try {
-            await (0, mysql_1.executarComandoSQL)(query, params);
+            const resultado = await (0, mysql_1.executarComandoSQL)(query, params);
+            livro.id = resultado.insertId;
             console.log('Livro inserido com sucesso:', livro);
             return new Promise((resolve) => {
                 resolve(livro);

@@ -41,7 +41,8 @@ export class LivroRepository {
         const params = [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoria_id];
         
         try {
-            await executarComandoSQL(query, params);
+            const resultado = await executarComandoSQL(query, params);
+            livro.id = resultado.insertId;
             console.log('Livro inserido com sucesso:', livro);
             return new Promise<LivroEntity>((resolve) => {
                 resolve(livro);
@@ -49,8 +50,8 @@ export class LivroRepository {
         } catch (error) {
             console.error(`Erro ao inserir o livro com ISBN ${livro.isbn}:`, error);
             throw error;
-        }
-    }
+      }
+  }
 
     async findAll(): Promise<LivroEntity[]> {
         const query = "SELECT * FROM biblioteca.Livro";
