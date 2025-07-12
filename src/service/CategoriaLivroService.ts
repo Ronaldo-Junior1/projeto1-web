@@ -1,5 +1,5 @@
 import { CategoriaLivroEntity } from "../model/entity/CategoriaLivroEntity";
-import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepositoryt";
+import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
 
 export class CategoriaLivroService {
     private repository = CategoriaLivroRepository.getInstance();

@@ -56,8 +56,22 @@ export class CategoriaLivroRepository {
         }
   }
 
-  //to-do
-  findById(id: number): CategoriaLivroEntity | undefined {
-    return this.categorias.find(c => c.id === id);
-  }
+ async findById(id: number): Promise<CategoriaLivroEntity> {
+        const query = `SELECT * FROM biblioteca.CategoriaLivro WHERE id = ?`;
+        try {
+            const resultado = await executarComandoSQL(query, [id]);
+            
+            if (resultado.length === 0) {
+                throw new Error("Categoria não encontrada com o ID fornecido");
+            }
+            
+            console.log(`Categoria com ID ${id} localizada com sucesso.`);
+            return new Promise<CategoriaLivroEntity>((resolve) => {
+                resolve(resultado[0]);
+            });
+        } catch (error) {
+            console.error(`Falha ao buscar categoria pelo ID ${id}:`, error);
+            throw error;
+        }
+    }
 }

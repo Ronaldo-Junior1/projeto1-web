@@ -55,7 +55,22 @@ export class CursoRepository {
         }
   }
 
-  findById(id: number) {
-    return this.cursos.find(c => c.id === id);
-  }
+  async findById(id: number): Promise<CursoEntity> {
+        const query = `SELECT * FROM biblioteca.Curso WHERE id = ?`;
+        try {
+            const resultado = await executarComandoSQL(query, [id]);
+            
+            if (resultado.length === 0) {
+                throw new Error("Categoria não encontrada com o ID fornecido");
+            }
+            
+            console.log(`Categoria com ID ${id} localizada com sucesso.`);
+            return new Promise<CursoEntity>((resolve) => {
+                resolve(resultado[0]);
+            });
+        } catch (error) {
+            console.error(`Falha ao buscar categoria pelo ID ${id}:`, error);
+            throw error;
+        }
+    }
 }

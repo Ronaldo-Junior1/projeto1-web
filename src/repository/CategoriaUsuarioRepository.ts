@@ -48,17 +48,30 @@ export class CategoriaUsuarioRepository {
          }
    }
 
+   async findById(id: number): Promise<CategoriaUsuarioEntity> {
+        const query = `SELECT * FROM biblioteca.CategoriaUsuario WHERE id = ?`;
+        try {
+            const resultado = await executarComandoSQL(query, [id]);
+            
+            if (resultado.length === 0) {
+                throw new Error("Categoria não encontrada com o ID fornecido");
+            }
+            
+            console.log(`Categoria com ID ${id} localizada com sucesso.`);
+            return new Promise<CategoriaUsuarioEntity>((resolve) => {
+                resolve(resultado[0]);
+            });
+        } catch (error) {
+            console.error(`Falha ao buscar categoria pelo ID ${id}:`, error);
+            throw error;
+        }
+    }
+
   static getInstance(): CategoriaUsuarioRepository {
     if (!this.instance) {
       this.instance = new CategoriaUsuarioRepository();
     }
     return this.instance;
-  }
-
-  
-
-  findById(id: number) {
-    return this.categorias.find(c => c.id === id);
   }
 
 }
