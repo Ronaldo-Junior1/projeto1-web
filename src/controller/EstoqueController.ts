@@ -4,15 +4,15 @@ import { EstoqueService } from "../service/EstoqueService";
 export class EstoqueController {
     private estoqueService = new EstoqueService();
 
-    cadastrarExemplar(req: Request, res: Response): void {
-        try {
-            const novoExemplar = this.estoqueService.novoExemplar(req.body);
-            res.status(201).json(novoExemplar);
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Erro ao cadastrar exemplar.";
-            res.status(400).json({ message });
-        }
-    }
+    // cadastrarExemplar(req: Request, res: Response): void {
+    //     try {
+    //         const novoExemplar = this.estoqueService.novoExemplar(req.body);
+    //         res.status(201).json(novoExemplar);
+    //     } catch (error: unknown) {
+    //         const message = error instanceof Error ? error.message : "Erro ao cadastrar exemplar.";
+    //         res.status(400).json({ message });
+    //     }
+    // }
 
     listarExemplares(req: Request, res: Response): void {
         try {

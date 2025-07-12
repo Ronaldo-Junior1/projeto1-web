@@ -37,9 +37,9 @@ export class EmprestimoService {
 
         let diasEmprestimo = usuario.categoria_id === 1 ? 40 : 15;
         const livro = this.livroRepository.findById(estoque.livro_id);
-        if (usuario.categoria_id === 2 && livro && usuario.curso_id === livro.categoria_id) {
-            diasEmprestimo = 30;
-        }
+        // if (usuario.categoria_id === 2 && livro && usuario.curso_id === livro.categoria_id) {
+        //     diasEmprestimo = 30;
+        // }
         const dataDevolucao = new Date();
         dataDevolucao.setDate(dataDevolucao.getDate() + diasEmprestimo);
         

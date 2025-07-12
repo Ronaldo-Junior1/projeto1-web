@@ -44,7 +44,7 @@ app.delete(`${BASE_URL}/usuarios/:cpf`, usuarioController.removerUsuario.bind(us
 
 
 // --- Rotas de Estoque ---
-app.post(`${BASE_URL}/estoque`, estoqueController.cadastrarExemplar.bind(estoqueController));
+// app.post(`${BASE_URL}/estoque`, estoqueController.cadastrarExemplar.bind(estoqueController));
 app.get(`${BASE_URL}/estoque`, estoqueController.listarExemplares.bind(estoqueController));
 app.get(`${BASE_URL}/estoque/:codigo`, estoqueController.detalharExemplar.bind(estoqueController));
 app.put(`${BASE_URL}/estoque/:codigo`, estoqueController.atualizarDisponibilidade.bind(estoqueController));

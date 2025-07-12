@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EstoqueService = void 0;
-const EstoqueEntity_1 = require("../model/entity/EstoqueEntity");
 const EmprestimoRepository_1 = require("../repository/EmprestimoRepository");
 const EstoqueRepository_1 = require("../repository/EstoqueRepository");
 const LivroRepository_1 = require("../repository/LivroRepository");
@@ -9,22 +8,22 @@ class EstoqueService {
     estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
     livroRepository = LivroRepository_1.LivroRepository.getInstance();
     emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
-    novoExemplar(data) {
-        const { isbn, codigo_exemplar } = data;
-        if (!isbn || !codigo_exemplar) {
-            throw new Error("ISBN do livro e código do exemplar são obrigatórios.");
-        }
-        if (this.estoqueRepository.findById(codigo_exemplar)) {
-            throw new Error("Código de exemplar já cadastrado.");
-        }
-        const livro = this.livroRepository.findByIsbn(isbn);
-        if (!livro) {
-            throw new Error("Livro com o ISBN informado não encontrado.");
-        }
-        const novoExemplar = new EstoqueEntity_1.EstoqueEntity(codigo_exemplar, livro.id);
-        this.estoqueRepository.insereEstoque(novoExemplar);
-        return novoExemplar;
-    }
+    // novoExemplar(data: { isbn: string; codigo_exemplar: number }): EstoqueEntity {
+    //     const { isbn, codigo_exemplar } = data;
+    //     if (!isbn || !codigo_exemplar) {
+    //         throw new Error("ISBN do livro e código do exemplar são obrigatórios.");
+    //     }
+    //     if (this.estoqueRepository.findById(codigo_exemplar)) {
+    //         throw new Error("Código de exemplar já cadastrado.");
+    //     }
+    //     const livro = this.livroRepository.findByIsbn(isbn);
+    //     if (!livro) {
+    //         throw new Error("Livro com o ISBN informado não encontrado.");
+    //     }
+    //     const novoExemplar = new EstoqueEntity(codigo_exemplar, livro.id);
+    //     this.estoqueRepository.insereEstoque(novoExemplar);
+    //     return novoExemplar;
+    // }
     listarEstoque() {
         const todosOsExemplares = this.estoqueRepository.findAll();
         const exemplaresDisponiveis = todosOsExemplares.filter(exemplar => exemplar.disponivel === true);

@@ -45,14 +45,28 @@ class CategoriaUsuarioRepository {
             throw err;
         }
     }
+    async findById(id) {
+        const query = `SELECT * FROM biblioteca.CategoriaUsuario WHERE id = ?`;
+        try {
+            const resultado = await (0, mysql_1.executarComandoSQL)(query, [id]);
+            if (resultado.length === 0) {
+                throw new Error("Categoria não encontrada com o ID fornecido");
+            }
+            console.log(`Categoria com ID ${id} localizada com sucesso.`);
+            return new Promise((resolve) => {
+                resolve(resultado[0]);
+            });
+        }
+        catch (error) {
+            console.error(`Falha ao buscar categoria pelo ID ${id}:`, error);
+            throw error;
+        }
+    }
     static getInstance() {
         if (!this.instance) {
             this.instance = new CategoriaUsuarioRepository();
         }
         return this.instance;
-    }
-    findById(id) {
-        return this.categorias.find(c => c.id === id);
     }
 }
 exports.CategoriaUsuarioRepository = CategoriaUsuarioRepository;

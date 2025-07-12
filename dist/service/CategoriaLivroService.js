@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoriaLivroService = void 0;
-const CategoriaLivroRepositoryt_1 = require("../repository/CategoriaLivroRepositoryt");
+const CategoriaLivroRepository_1 = require("../repository/CategoriaLivroRepository");
 class CategoriaLivroService {
-    repository = CategoriaLivroRepositoryt_1.CategoriaLivroRepository.getInstance();
+    repository = CategoriaLivroRepository_1.CategoriaLivroRepository.getInstance();
     async listarCategoriasLivro() {
         const categorias = await this.repository.findAll();
         console.log("Service - Filtrar Todos", categorias);

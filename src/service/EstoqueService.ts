@@ -8,23 +8,23 @@ export class EstoqueService {
     private livroRepository = LivroRepository.getInstance();
     private emprestimoRepository = EmprestimoRepository.getInstance();
 
-    novoExemplar(data: { isbn: string; codigo_exemplar: number }): EstoqueEntity {
-        const { isbn, codigo_exemplar } = data;
-        if (!isbn || !codigo_exemplar) {
-            throw new Error("ISBN do livro e código do exemplar são obrigatórios.");
-        }
-        if (this.estoqueRepository.findById(codigo_exemplar)) {
-            throw new Error("Código de exemplar já cadastrado.");
-        }
-        const livro = this.livroRepository.findByIsbn(isbn);
-        if (!livro) {
-            throw new Error("Livro com o ISBN informado não encontrado.");
-        }
+    // novoExemplar(data: { isbn: string; codigo_exemplar: number }): EstoqueEntity {
+    //     const { isbn, codigo_exemplar } = data;
+    //     if (!isbn || !codigo_exemplar) {
+    //         throw new Error("ISBN do livro e código do exemplar são obrigatórios.");
+    //     }
+    //     if (this.estoqueRepository.findById(codigo_exemplar)) {
+    //         throw new Error("Código de exemplar já cadastrado.");
+    //     }
+    //     const livro = this.livroRepository.findByIsbn(isbn);
+    //     if (!livro) {
+    //         throw new Error("Livro com o ISBN informado não encontrado.");
+    //     }
 
-        const novoExemplar = new EstoqueEntity(codigo_exemplar, livro.id);
-        this.estoqueRepository.insereEstoque(novoExemplar);
-        return novoExemplar;
-    }
+    //     const novoExemplar = new EstoqueEntity(codigo_exemplar, livro.id);
+    //     this.estoqueRepository.insereEstoque(novoExemplar);
+    //     return novoExemplar;
+    // }
 
     listarEstoque(): EstoqueEntity[] {
         const todosOsExemplares = this.estoqueRepository.findAll();

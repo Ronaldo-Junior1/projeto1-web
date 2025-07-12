@@ -4,16 +4,15 @@ exports.EstoqueController = void 0;
 const EstoqueService_1 = require("../service/EstoqueService");
 class EstoqueController {
     estoqueService = new EstoqueService_1.EstoqueService();
-    cadastrarExemplar(req, res) {
-        try {
-            const novoExemplar = this.estoqueService.novoExemplar(req.body);
-            res.status(201).json(novoExemplar);
-        }
-        catch (error) {
-            const message = error instanceof Error ? error.message : "Erro ao cadastrar exemplar.";
-            res.status(400).json({ message });
-        }
-    }
+    // cadastrarExemplar(req: Request, res: Response): void {
+    //     try {
+    //         const novoExemplar = this.estoqueService.novoExemplar(req.body);
+    //         res.status(201).json(novoExemplar);
+    //     } catch (error: unknown) {
+    //         const message = error instanceof Error ? error.message : "Erro ao cadastrar exemplar.";
+    //         res.status(400).json({ message });
+    //     }
+    // }
     listarExemplares(req, res) {
         try {
             const exemplares = this.estoqueService.listarEstoque();

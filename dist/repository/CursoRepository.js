@@ -51,8 +51,22 @@ class CursoRepository {
             throw err;
         }
     }
-    findById(id) {
-        return this.cursos.find(c => c.id === id);
+    async findById(id) {
+        const query = `SELECT * FROM biblioteca.Curso WHERE id = ?`;
+        try {
+            const resultado = await (0, mysql_1.executarComandoSQL)(query, [id]);
+            if (resultado.length === 0) {
+                throw new Error("Categoria não encontrada com o ID fornecido");
+            }
+            console.log(`Categoria com ID ${id} localizada com sucesso.`);
+            return new Promise((resolve) => {
+                resolve(resultado[0]);
+            });
+        }
+        catch (error) {
+            console.error(`Falha ao buscar categoria pelo ID ${id}:`, error);
+            throw error;
+        }
     }
 }
 exports.CursoRepository = CursoRepository;
