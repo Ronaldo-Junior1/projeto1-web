@@ -77,7 +77,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], LivroController.prototype, "cadastrarLivro", null);
 __decorate([
-    (0, tsoa_1.Get)("todos"),
+    (0, tsoa_1.Get)(),
     __param(0, (0, tsoa_1.Res)()),
     __param(1, (0, tsoa_1.Res)()),
     __metadata("design:type", Function),

@@ -309,7 +309,7 @@ export function RegisterRoutes(app: Router) {
                 notFound: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
                 success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
         };
-        app.get('/livros/todos',
+        app.get('/livros',
             ...(fetchMiddlewares<RequestHandler>(LivroController)),
             ...(fetchMiddlewares<RequestHandler>(LivroController.prototype.listarLivros)),
 
