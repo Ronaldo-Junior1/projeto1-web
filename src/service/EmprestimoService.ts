@@ -60,33 +60,64 @@ export class EmprestimoService {
 
     async registrarDevolucao(emprestimoId: number): Promise<EmprestimoEntity> {
         const emprestimo = await this.emprestimoRepository.findById(emprestimoId);
-        if (emprestimo.data_entrega) {
-            throw new Error("Este livro já foi devolvido.");
-        }
+        if (emprestimo.data_entrega) throw new Error("Este livro já foi devolvido.");
 
         emprestimo.data_entrega = new Date();
         emprestimo.dias_atraso = this.calcularDiasDeAtraso(emprestimo.data_entrega, new Date(emprestimo.data_devolucao));
-
+        
         if (emprestimo.dias_atraso > 0) {
             const diasDeSuspensao = emprestimo.dias_atraso * 3;
             const dataSuspensaoFinal = new Date();
             dataSuspensaoFinal.setDate(dataSuspensaoFinal.getDate() + diasDeSuspensao);
             emprestimo.suspensao_ate = dataSuspensaoFinal;
             const usuario = await this.usuarioRepository.filterUsuarioById(emprestimo.usuario_id);
-            const totalAtrasos = await this.emprestimoRepository.countEmprestimosComAtrasoPorUsuario(usuario.id!);
-
-            if (totalAtrasos > 2) {
-                await this.usuarioService.alterarStatus(usuario.cpf, StatusUsuario.INATIVO);
-            } else if (diasDeSuspensao > 60) {
-                await this.usuarioService.alterarStatus(usuario.cpf, StatusUsuario.SUSPENSO);
-            }
+            await this.usuarioService.alterarStatus(usuario.cpf, StatusUsuario.SUSPENSO);
         }
+        
         const emprestimoAtualizado = await this.emprestimoRepository.updateEmprestimo(emprestimo);
-
+        
         await this.estoqueService.registrarDevolucao(emprestimo.estoque_id);
-
+        
         console.log("Service - Devolução registrada:", emprestimoAtualizado);
         return emprestimoAtualizado;
+    }
+
+
+     async verificaAtrasos(): Promise<void> {
+        const emprestimosAtrasados = await this.emprestimoRepository.findEmprestimosAtrasados();
+        const hoje = new Date();
+        const atrasosMaioresQueVinte: Record<string, number> = {};
+
+        for (const emprestimo of emprestimosAtrasados) {
+            if (emprestimo.data_entrega === null) {
+                const diasDeAtraso = this.calcularDiasDeAtraso(hoje, new Date(emprestimo.data_devolucao));
+
+                if (diasDeAtraso > 0) {
+                    emprestimo.dias_atraso = diasDeAtraso;
+                    const diasDeSuspensao = diasDeAtraso * 3;
+                    const dataSuspensaoFinal = new Date();
+                    dataSuspensaoFinal.setDate(dataSuspensaoFinal.getDate() + diasDeSuspensao);
+                    emprestimo.suspensao_ate = dataSuspensaoFinal;
+                    
+                    await this.emprestimoRepository.updateEmprestimo(emprestimo);
+
+                    if (diasDeAtraso > 20) {
+                        const usuario = await this.usuarioRepository.filterUsuarioById(emprestimo.usuario_id);
+                        atrasosMaioresQueVinte[usuario.cpf] = (atrasosMaioresQueVinte[usuario.cpf] || 0) + 1;
+                    }
+                }
+            }
+        }
+        for (const cpf in atrasosMaioresQueVinte) {
+            const qtdAtrasosMaioresQueVinte = atrasosMaioresQueVinte[cpf];
+            let usuario = await this.usuarioService.buscarUsuarioPorCPF(cpf);
+
+            if (qtdAtrasosMaioresQueVinte >= 2 && usuario.status !== StatusUsuario.INATIVO) {
+                await this.usuarioService.alterarStatus(cpf, StatusUsuario.INATIVO);
+            } else if (qtdAtrasosMaioresQueVinte === 1 && usuario.status === StatusUsuario.ATIVO) {
+                await this.usuarioService.alterarStatus(cpf, StatusUsuario.SUSPENSO);
+            }
+        }
     }
 
     private calcularDiasDeAtraso(dataEntrega: Date, dataDevolucao: Date): number {

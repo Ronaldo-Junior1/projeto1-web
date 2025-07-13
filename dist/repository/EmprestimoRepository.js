@@ -126,16 +126,25 @@ class EmprestimoRepository {
             throw err;
         }
     }
-    async countEmprestimosComAtrasoPorUsuario(usuario_id) {
-        const query = "SELECT COUNT(*) as total FROM biblioteca.Emprestimo WHERE usuario_id = ? AND dias_atraso > 0";
+    async findSuspencoesAtivasPorUsuario(usuario_id) {
+        const query = "SELECT * FROM biblioteca.Emprestimo WHERE usuario_id = ? AND suspensao_ate >= CURDATE()";
         try {
             const resultado = await (0, mysql_1.executarComandoSQL)(query, [usuario_id]);
-            const total = resultado[0].total;
-            console.log(`Usuário ID ${usuario_id} possui ${total} empréstimos com atraso.`);
-            return new Promise(resolve => resolve(total));
+            return new Promise(resolve => resolve(resultado));
         }
         catch (err) {
-            console.error(`Falha ao contar empréstimos com atraso para o usuário ID ${usuario_id}:`, err);
+            console.error(`Falha ao buscar suspensões ativas para o usuário ID ${usuario_id}:`, err);
+            throw err;
+        }
+    }
+    async findEmprestimosAtrasados() {
+        const query = "SELECT * FROM biblioteca.Emprestimo WHERE data_devolucao < CURDATE() AND data_entrega IS NULL";
+        try {
+            const resultado = await (0, mysql_1.executarComandoSQL)(query, []);
+            return new Promise(resolve => resolve(resultado));
+        }
+        catch (err) {
+            console.error(`Falha ao buscar empréstimos atrasados:`, err);
             throw err;
         }
     }

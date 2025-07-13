@@ -118,6 +118,17 @@ class UsuarioRepository {
             throw err;
         }
     }
+    async findUsuariosPorStatus(status) {
+        const query = "SELECT * FROM biblioteca.Usuario WHERE status IN (?)";
+        try {
+            const resultado = await (0, mysql_1.executarComandoSQL)(query, [status]);
+            return new Promise(resolve => resolve(resultado));
+        }
+        catch (err) {
+            console.error(`Falha ao buscar usuários pelo status:`, err);
+            throw err;
+        }
+    }
     static getInstance() {
         if (!this.instance) {
             this.instance = new UsuarioRepository();

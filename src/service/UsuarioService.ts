@@ -93,6 +93,21 @@ export class UsuarioService {
         return usuario;
     }
 
+    async reativarUsuarios(): Promise<void> {
+        console.log("SERVICE: Verificando usuários para reativar...");
+        const usuariosSuspensos = await this.usuarioRepository.findUsuariosPorStatus([StatusUsuario.SUSPENSO]);
+        
+        for (const usuario of usuariosSuspensos) {
+            const suspensoesAtivas = await this.emprestimoRepository.findSuspencoesAtivasPorUsuario(usuario.id!);
+            
+            if (suspensoesAtivas.length === 0) {
+                console.log(`Reativando usuário ${usuario.nome} (ID: ${usuario.id})`);
+                await this.alterarStatus(usuario.cpf, StatusUsuario.ATIVO);
+            }
+        }
+    }
+    
+
     private validarCPF(cpf: string): boolean {
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
             return false;

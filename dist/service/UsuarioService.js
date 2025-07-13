@@ -78,6 +78,17 @@ class UsuarioService {
         console.log(`Service - Status do usuário ${cpf} alterado para ${novoStatus}`);
         return usuario;
     }
+    async reativarUsuarios() {
+        console.log("SERVICE: Verificando usuários para reativar...");
+        const usuariosSuspensos = await this.usuarioRepository.findUsuariosPorStatus([StatusUsuario_1.StatusUsuario.SUSPENSO]);
+        for (const usuario of usuariosSuspensos) {
+            const suspensoesAtivas = await this.emprestimoRepository.findSuspencoesAtivasPorUsuario(usuario.id);
+            if (suspensoesAtivas.length === 0) {
+                console.log(`Reativando usuário ${usuario.nome} (ID: ${usuario.id})`);
+                await this.alterarStatus(usuario.cpf, StatusUsuario_1.StatusUsuario.ATIVO);
+            }
+        }
+    }
     validarCPF(cpf) {
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
             return false;

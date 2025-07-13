@@ -1,5 +1,6 @@
 import { executarComandoSQL } from "../database/mysql";
 import { UsuarioEntity } from "../model/entity/UsuarioEntity";
+import { StatusUsuario } from "../model/enum/StatusUsuario";
 
 export class UsuarioRepository {
   private static instance: UsuarioRepository;
@@ -7,8 +8,6 @@ export class UsuarioRepository {
     private constructor() {
         this.createTable();
     }
-
-    
 
     private async createTable() {
         const query = `
@@ -126,6 +125,17 @@ export class UsuarioRepository {
             console.error(`Falha ao listar os usuários:`, err);
             throw err;
         }
+    }
+
+    async findUsuariosPorStatus(status: StatusUsuario[]): Promise<UsuarioEntity[]> {
+        const query = "SELECT * FROM biblioteca.Usuario WHERE status IN (?)";
+        try {
+            const resultado = await executarComandoSQL(query, [status]);
+            return new Promise(resolve => resolve(resultado));
+        } catch (err) {
+            console.error(`Falha ao buscar usuários pelo status:`, err);
+            throw err;
+      }
     }
 
 
