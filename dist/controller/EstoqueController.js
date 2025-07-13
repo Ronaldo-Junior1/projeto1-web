@@ -1,58 +1,118 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EstoqueController = void 0;
+const tsoa_1 = require("tsoa");
 const EstoqueService_1 = require("../service/EstoqueService");
-class EstoqueController {
+const BasicResponseDto_1 = require("../model/dto/BasicResponseDto");
+const EstoqueRequestDto_1 = require("../model/dto/EstoqueRequestDto");
+const EstoqueUpdateRequestDto_1 = require("../model/dto/EstoqueUpdateRequestDto");
+let EstoqueController = class EstoqueController extends tsoa_1.Controller {
     estoqueService = new EstoqueService_1.EstoqueService();
-    // cadastrarExemplar(req: Request, res: Response): void {
-    //     try {
-    //         const novoExemplar = this.estoqueService.novoExemplar(req.body);
-    //         res.status(201).json(novoExemplar);
-    //     } catch (error: unknown) {
-    //         const message = error instanceof Error ? error.message : "Erro ao cadastrar exemplar.";
-    //         res.status(400).json({ message });
-    //     }
-    // }
-    listarExemplares(req, res) {
+    async cadastrarExemplar(dto, fail, success) {
         try {
-            const exemplares = this.estoqueService.listarEstoque();
-            res.status(200).json(exemplares);
+            const novoExemplar = await this.estoqueService.novoExemplar(dto);
+            return success(201, new BasicResponseDto_1.BasicResponseDto("Exemplar cadastrado com sucesso!", novoExemplar));
         }
         catch (error) {
-            res.status(500).json({ message: "Erro ao listar exemplares." });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-    detalharExemplar(req, res) {
+    async listarExemplaresDisponiveis(fail, success) {
         try {
-            const exemplar = this.estoqueService.buscarPorCodigo(Number(req.params.codigo));
-            res.status(200).json(exemplar);
+            const exemplares = await this.estoqueService.listarEstoqueDisponivel();
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Exemplares disponíveis listados com sucesso!", exemplares));
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Erro ao buscar exemplar.";
-            res.status(404).json({ message });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-    atualizarDisponibilidade(req, res) {
+    async detalharExemplar(codigo, notFound, success) {
         try {
-            const { codigo } = req.params;
-            const { quantidade } = req.body;
-            const exemplar = this.estoqueService.atualizarQuantidade(Number(codigo), quantidade);
-            res.status(200).json(exemplar);
+            const exemplar = await this.estoqueService.buscarPorCodigo(codigo);
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Exemplar encontrado com sucesso!", exemplar));
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Erro ao atualizar exemplar.";
-            res.status(400).json({ message });
+            return notFound(404, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-    removerExemplar(req, res) {
+    async atualizarQuantidade(codigo, dto, fail, success) {
         try {
-            this.estoqueService.removerExemplar(Number(req.params.codigo));
-            res.status(204).send();
+            const exemplarAtualizado = await this.estoqueService.atualizarQuantidade(codigo, dto.quantidade);
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Quantidade do exemplar atualizada com sucesso!", exemplarAtualizado));
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Erro ao remover exemplar.";
-            res.status(400).json({ message });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
         }
     }
-}
+    async removerExemplar(codigo, fail, noContent) {
+        try {
+            await this.estoqueService.removerExemplar(codigo);
+            return noContent(204);
+        }
+        catch (error) {
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
+        }
+    }
+};
 exports.EstoqueController = EstoqueController;
+__decorate([
+    (0, tsoa_1.Post)(),
+    __param(0, (0, tsoa_1.Body)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [EstoqueRequestDto_1.EstoqueRequestDto, Function, Function]),
+    __metadata("design:returntype", Promise)
+], EstoqueController.prototype, "cadastrarExemplar", null);
+__decorate([
+    (0, tsoa_1.Get)(),
+    __param(0, (0, tsoa_1.Res)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Function, Function]),
+    __metadata("design:returntype", Promise)
+], EstoqueController.prototype, "listarExemplaresDisponiveis", null);
+__decorate([
+    (0, tsoa_1.Get)("{codigo}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Function, Function]),
+    __metadata("design:returntype", Promise)
+], EstoqueController.prototype, "detalharExemplar", null);
+__decorate([
+    (0, tsoa_1.Put)("{codigo}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __param(3, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, EstoqueUpdateRequestDto_1.EstoqueUpdateRequestDto, Function, Function]),
+    __metadata("design:returntype", Promise)
+], EstoqueController.prototype, "atualizarQuantidade", null);
+__decorate([
+    (0, tsoa_1.Delete)("{codigo}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Function, Function]),
+    __metadata("design:returntype", Promise)
+], EstoqueController.prototype, "removerExemplar", null);
+exports.EstoqueController = EstoqueController = __decorate([
+    (0, tsoa_1.Route)("estoque"),
+    (0, tsoa_1.Tags)("Estoque")
+], EstoqueController);

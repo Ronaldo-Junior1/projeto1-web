@@ -8,6 +8,8 @@ import { UsuarioController } from './../controller/UsuarioController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { LivroController } from './../controller/LivroController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { EstoqueController } from './../controller/EstoqueController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CategoriaLivroController } from './../controller/CatalogosController';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
@@ -73,6 +75,23 @@ const models: TsoaRoute.Models = {
             "editora": {"dataType":"string"},
             "edicao": {"dataType":"string"},
             "categoria_id": {"dataType":"double"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EstoqueRequestDto": {
+        "dataType": "refObject",
+        "properties": {
+            "isbn": {"dataType":"string","required":true},
+            "codigo_exemplar": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EstoqueUpdateRequestDto": {
+        "dataType": "refObject",
+        "properties": {
+            "quantidade": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
@@ -403,6 +422,166 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'removerLivro',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsEstoqueController_cadastrarExemplar: Record<string, TsoaRoute.ParameterSchema> = {
+                dto: {"in":"body","name":"dto","required":true,"ref":"EstoqueRequestDto"},
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"201","required":true,"ref":"BasicResponseDto"},
+        };
+        app.post('/estoque',
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController)),
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController.prototype.cadastrarExemplar)),
+
+            async function EstoqueController_cadastrarExemplar(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsEstoqueController_cadastrarExemplar, request, response });
+
+                const controller = new EstoqueController();
+
+              await templateService.apiHandler({
+                methodName: 'cadastrarExemplar',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsEstoqueController_listarExemplaresDisponiveis: Record<string, TsoaRoute.ParameterSchema> = {
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
+        };
+        app.get('/estoque',
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController)),
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController.prototype.listarExemplaresDisponiveis)),
+
+            async function EstoqueController_listarExemplaresDisponiveis(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsEstoqueController_listarExemplaresDisponiveis, request, response });
+
+                const controller = new EstoqueController();
+
+              await templateService.apiHandler({
+                methodName: 'listarExemplaresDisponiveis',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsEstoqueController_detalharExemplar: Record<string, TsoaRoute.ParameterSchema> = {
+                codigo: {"in":"path","name":"codigo","required":true,"dataType":"double"},
+                notFound: {"in":"res","name":"404","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
+        };
+        app.get('/estoque/:codigo',
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController)),
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController.prototype.detalharExemplar)),
+
+            async function EstoqueController_detalharExemplar(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsEstoqueController_detalharExemplar, request, response });
+
+                const controller = new EstoqueController();
+
+              await templateService.apiHandler({
+                methodName: 'detalharExemplar',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsEstoqueController_atualizarQuantidade: Record<string, TsoaRoute.ParameterSchema> = {
+                codigo: {"in":"path","name":"codigo","required":true,"dataType":"double"},
+                dto: {"in":"body","name":"dto","required":true,"ref":"EstoqueUpdateRequestDto"},
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
+        };
+        app.put('/estoque/:codigo',
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController)),
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController.prototype.atualizarQuantidade)),
+
+            async function EstoqueController_atualizarQuantidade(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsEstoqueController_atualizarQuantidade, request, response });
+
+                const controller = new EstoqueController();
+
+              await templateService.apiHandler({
+                methodName: 'atualizarQuantidade',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsEstoqueController_removerExemplar: Record<string, TsoaRoute.ParameterSchema> = {
+                codigo: {"in":"path","name":"codigo","required":true,"dataType":"double"},
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                noContent: {"in":"res","name":"204","required":true,"dataType":"void"},
+        };
+        app.delete('/estoque/:codigo',
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController)),
+            ...(fetchMiddlewares<RequestHandler>(EstoqueController.prototype.removerExemplar)),
+
+            async function EstoqueController_removerExemplar(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsEstoqueController_removerExemplar, request, response });
+
+                const controller = new EstoqueController();
+
+              await templateService.apiHandler({
+                methodName: 'removerExemplar',
                 controller,
                 response,
                 next,

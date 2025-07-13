@@ -31,7 +31,7 @@ export class EstoqueService {
         return exemplarCriado;
     }
 
-    async listarEstoque(): Promise<EstoqueEntity[]> {
+    async listarEstoqueDisponivel(): Promise<EstoqueEntity[]> {
         const estoque = await this.estoqueRepository.findAllDisponiveis();
         console.log("Service - Estoque listado:", estoque);
         return estoque;

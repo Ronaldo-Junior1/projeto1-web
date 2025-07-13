@@ -1,57 +1,81 @@
-import { Request, Response } from "express";
+import { Body, Controller, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse } from "tsoa";
 import { EstoqueService } from "../service/EstoqueService";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { EstoqueRequestDto } from "../model/dto/EstoqueRequestDto";
+import { EstoqueUpdateRequestDto } from "../model/dto/EstoqueUpdateRequestDto";
 
-export class EstoqueController {
+@Route("estoque")
+@Tags("Estoque")
+export class EstoqueController extends Controller {
     private estoqueService = new EstoqueService();
 
-    // cadastrarExemplar(req: Request, res: Response): void {
-    //     try {
-    //         const novoExemplar = this.estoqueService.novoExemplar(req.body);
-    //         res.status(201).json(novoExemplar);
-    //     } catch (error: unknown) {
-    //         const message = error instanceof Error ? error.message : "Erro ao cadastrar exemplar.";
-    //         res.status(400).json({ message });
-    //     }
-    // }
-
-    listarExemplares(req: Request, res: Response): void {
+    @Post()
+    public async cadastrarExemplar(
+        @Body() dto: EstoqueRequestDto,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<201, BasicResponseDto>
+    ): Promise<void> {
         try {
-            const exemplares = this.estoqueService.listarEstoque();
-            res.status(200).json(exemplares);
-        } catch (error: unknown) {
-            res.status(500).json({ message: "Erro ao listar exemplares." });
+            const novoExemplar = await this.estoqueService.novoExemplar(dto);
+            return success(201, new BasicResponseDto("Exemplar cadastrado com sucesso!", novoExemplar));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
         }
     }
 
-    detalharExemplar(req: Request, res: Response): void {
+    @Get()
+    public async listarExemplaresDisponiveis(
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void> {
         try {
-            const exemplar = this.estoqueService.buscarPorCodigo(Number(req.params.codigo));
-            res.status(200).json(exemplar);
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Erro ao buscar exemplar.";
-            res.status(404).json({ message });
+            const exemplares = await this.estoqueService.listarEstoqueDisponivel();
+            return success(200, new BasicResponseDto("Exemplares disponíveis listados com sucesso!", exemplares));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
         }
     }
 
-    atualizarDisponibilidade(req: Request, res: Response): void {
+    @Get("{codigo}")
+    public async detalharExemplar(
+        @Path() codigo: number,
+        @Res() notFound: TsoaResponse<404, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void> {
         try {
-            const { codigo } = req.params;
-            const { quantidade } = req.body;
-            const exemplar = this.estoqueService.atualizarQuantidade(Number(codigo), quantidade);
-            res.status(200).json(exemplar);
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Erro ao atualizar exemplar.";
-            res.status(400).json({ message });
+            const exemplar = await this.estoqueService.buscarPorCodigo(codigo);
+            return success(200, new BasicResponseDto("Exemplar encontrado com sucesso!", exemplar));
+        } catch (error: any) {
+            return notFound(404, new BasicResponseDto(error.message, undefined));
         }
     }
 
-    removerExemplar(req: Request, res: Response): void {
+    @Put("{codigo}")
+    public async atualizarQuantidade(
+        @Path() codigo: number,
+        @Body() dto: EstoqueUpdateRequestDto,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void> {
         try {
-            this.estoqueService.removerExemplar(Number(req.params.codigo));
-            res.status(204).send();
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Erro ao remover exemplar.";
-            res.status(400).json({ message });
+            const exemplarAtualizado = await this.estoqueService.atualizarQuantidade(codigo, dto.quantidade);
+            return success(200, new BasicResponseDto("Quantidade do exemplar atualizada com sucesso!", exemplarAtualizado));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
+        }
+    }
+
+    @Delete("{codigo}")
+    public async removerExemplar(
+        @Path() codigo: number,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() noContent: TsoaResponse<204, void>
+    ): Promise<void> {
+        try {
+            await this.estoqueService.removerExemplar(codigo);
+            return noContent(204);
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
         }
     }
 }
