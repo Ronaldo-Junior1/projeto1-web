@@ -2,23 +2,33 @@ import express from "express";
 import { RegisterRoutes } from './route/routes';
 import { setupSwagger } from "./config/Swagger";
 import { verificaAtrasoEReativa } from "./routine/VerificaAtraso";
+import { inicializarTabelas } from "./database/initializer";
 
-const app = express();
 
-const PORT =  process.env.PORT ?? 3090;
+async function app() {
+    await inicializarTabelas();
 
-app.use(express.json());
+    const app = express();
 
-const apiRouter = express.Router();
-RegisterRoutes(apiRouter);
+    const PORT = process.env.PORT ?? 3090;
 
-app.use("/library", apiRouter);
+    app.use(express.json());
 
-RegisterRoutes(app);
+    const apiRouter = express.Router();
+    RegisterRoutes(apiRouter);
 
-setupSwagger(app);
+    app.use("/library", apiRouter);
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`)
-    verificaAtrasoEReativa();
+    RegisterRoutes(app);
+
+    setupSwagger(app);
+
+    app.listen(PORT, () => {
+        console.log(`Servidor rodando em http://localhost:${PORT}`)
+        verificaAtrasoEReativa();
+    });
+}
+
+app().catch((error: any) => {
+  console.error("Erro ao iniciar:", error);
 });

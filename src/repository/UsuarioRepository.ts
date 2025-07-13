@@ -6,10 +6,10 @@ export class UsuarioRepository {
   private static instance: UsuarioRepository;
 
     private constructor() {
-        this.createTable();
+        
     }
 
-    private async createTable() {
+    async createTable() {
         const query = `
         CREATE TABLE IF NOT EXISTS biblioteca.Usuario (
             id INT AUTO_INCREMENT PRIMARY KEY,

@@ -3,14 +3,11 @@ import { executarComandoSQL } from "../database/mysql";
 
 export class CategoriaLivroRepository {
   private static instance: CategoriaLivroRepository;
-  private categorias: CategoriaLivroEntity[] = [];
 
   private constructor() {
-    this.createTable();
   }
 
-
-  private async createTable() {
+  async createTable() {
         const query = `
         CREATE TABLE IF NOT EXISTS biblioteca.CategoriaLivro (
             id INT AUTO_INCREMENT PRIMARY KEY,

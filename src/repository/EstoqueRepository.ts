@@ -5,7 +5,7 @@ export class EstoqueRepository {
     private static instance: EstoqueRepository;
 
     private constructor() {
-        this.createTable();
+      
     }
 
     public static getInstance(): EstoqueRepository {
@@ -15,7 +15,7 @@ export class EstoqueRepository {
         return this.instance;
     }
 
-    private async createTable() {
+     async createTable() {
         const query = `
         CREATE TABLE IF NOT EXISTS biblioteca.Estoque (
             id INT PRIMARY KEY,

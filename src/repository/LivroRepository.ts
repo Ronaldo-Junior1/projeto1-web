@@ -5,10 +5,10 @@ export class LivroRepository {
   private static instance: LivroRepository;
 
   private constructor() {
-    this.createTable();
+    
   }
 
-  private async createTable() {
+   async createTable() {
     const query = `
         CREATE TABLE IF NOT EXISTS biblioteca.Livro (
             id INT AUTO_INCREMENT PRIMARY KEY,

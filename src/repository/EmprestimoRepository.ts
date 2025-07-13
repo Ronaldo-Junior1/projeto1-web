@@ -5,7 +5,6 @@ export class EmprestimoRepository {
   private static instance: EmprestimoRepository;
 
   private constructor() {
-    this.createTable();
   }
 
   public static getInstance(): EmprestimoRepository {
@@ -15,7 +14,7 @@ export class EmprestimoRepository {
     return this.instance;
   }
 
-  private async createTable() {
+  async createTable() {
     const query = `
         CREATE TABLE IF NOT EXISTS biblioteca.Emprestimo (
             id INT AUTO_INCREMENT PRIMARY KEY,

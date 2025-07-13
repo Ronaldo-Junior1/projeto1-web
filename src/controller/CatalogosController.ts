@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { CategoriaLivroService } from "../service/CategoriaLivroService";
 import { Body, Controller, Delete, Get, Path, Post, Put, Query, Res, Route, Tags, TsoaResponse } from "tsoa";
 import { BasicResponseDto } from "../model/dto/BasicResponseDto";
@@ -10,7 +9,7 @@ import { CursoService } from "../service/CursoService";
 
 @Route("catalogos")
 @Tags("Catalogos")
-export class CategoriaLivroController {
+export class CatalogosController extends Controller{
     private serviceLivros = new CategoriaLivroService();
     private serviceUsuarios = new CategoriaUsuarioService();
     private serviceCursos = new CursoService();

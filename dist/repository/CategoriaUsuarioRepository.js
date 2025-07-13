@@ -6,7 +6,6 @@ class CategoriaUsuarioRepository {
     static instance;
     categorias = [];
     constructor() {
-        this.createTable();
     }
     async createTable() {
         const query = `

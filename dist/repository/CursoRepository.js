@@ -5,7 +5,6 @@ const mysql_1 = require("../database/mysql");
 class CursoRepository {
     static instance;
     constructor() {
-        this.createTable();
     }
     async createTable() {
         const query = `

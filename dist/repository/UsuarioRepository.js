@@ -5,7 +5,6 @@ const mysql_1 = require("../database/mysql");
 class UsuarioRepository {
     static instance;
     constructor() {
-        this.createTable();
     }
     async createTable() {
         const query = `
