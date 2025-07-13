@@ -61,15 +61,24 @@ class LivroService {
         const livro = await this.buscarLivroPorIsbn(isbn);
         const todosOsExemplares = await this.estoqueRepository.findAllByLivroId(Number(livro.id));
         for (const exemplar of todosOsExemplares) {
-            const emprestimoAtivo = await this.emprestimoRepository.findAtivoByEstoqueId(exemplar.id);
-            if (emprestimoAtivo) {
-                throw new Error(`Livro não pode ser removido. O exemplar de código ${exemplar.id} está emprestado.`);
+            try {
+                const emprestimoAtivo = await this.emprestimoRepository.findAtivoByEstoqueId(exemplar.id);
+                if (emprestimoAtivo) {
+                    throw new Error(`Livro não pode ser removido. O exemplar de código ${exemplar.id} está emprestado.`);
+                }
+            }
+            catch (error) {
+                if (error.message.includes("Nenhum empréstimo ativo encontrado")) {
+                    continue;
+                }
+                throw error;
             }
         }
         await this.livroRepository.removeLivroPorIsbn(isbn);
         for (const exemplar of todosOsExemplares) {
             await this.estoqueRepository.removeById(exemplar.id);
         }
+        console.log(`Livro com ISBN ${isbn} e todos os seus exemplares foram removidos com sucesso.`);
     }
 }
 exports.LivroService = LivroService;
