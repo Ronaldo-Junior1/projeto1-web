@@ -22,7 +22,7 @@ export class EstoqueRepository {
             livro_id INT NOT NULL,
             quantidade INT NOT NULL DEFAULT 0,
             quantidade_emprestada INT NOT NULL DEFAULT 0,
-            disponivel BOOLEAN NOT NULL DEFAULT FALSE,
+            disponivel BOOLEAN NOT NULL DEFAULT FALSE
         )`;
         try {
             await executarComandoSQL(query, []);
