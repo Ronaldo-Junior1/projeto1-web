@@ -23,7 +23,7 @@ export class LivroController extends Controller {
         }
     }
 
-    @Get("todos")
+    @Get()
     public async listarLivros(
         @Res() notFound: TsoaResponse<400, BasicResponseDto>,
         @Res() success: TsoaResponse<200, BasicResponseDto>
