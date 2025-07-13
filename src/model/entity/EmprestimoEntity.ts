@@ -1,5 +1,5 @@
 export class EmprestimoEntity {
-  id: number;
+  id?: number;
   usuario_id: number;
   estoque_id: number;
   data_emprestimo: Date;
@@ -8,8 +8,8 @@ export class EmprestimoEntity {
   dias_atraso: number;
   suspensao_ate: Date | null;
 
-  constructor(usuario_id: number, estoque_id: number, data_devolucao: Date) {
-    this.id = this.gerarId();
+  constructor(usuario_id: number, estoque_id: number, data_devolucao: Date,id?:number) {
+    this.id = id;
     this.usuario_id = usuario_id;
     this.estoque_id = estoque_id;
     this.data_emprestimo = new Date();
@@ -17,9 +17,5 @@ export class EmprestimoEntity {
     this.data_entrega = null;
     this.dias_atraso = 0;
     this.suspensao_ate = null;
-  }
-
-  private gerarId(): number {
-    return parseInt((Date.now() * Math.random()).toString());
   }
 }
